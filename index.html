@@ -1,1519 +1,1124 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CreatorFix — Fix Your YouTube. Grow Your Empire.</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root {
-  --red: #FF2121;
-  --gold: #FFD700;
-  --dark: #080808;
-  --dark2: #0f0f0f;
-  --dark3: #161616;
-  --glass: rgba(255,255,255,0.04);
-  --glass2: rgba(255,255,255,0.08);
-  --border: rgba(255,255,255,0.08);
-  --text: #f0f0f0;
-  --muted: #888;
-  --font-head: 'Syne', sans-serif;
-  --font-body: 'Plus Jakarta Sans', sans-serif;
-}
-
-* { margin:0; padding:0; box-sizing:border-box; }
-
-html { scroll-behavior: smooth; }
-
-body {
-  background: var(--dark);
-  color: var(--text);
-  font-family: var(--font-body);
-  overflow-x: hidden;
-  cursor: none;
-}
-
-/* CUSTOM CURSOR */
-.cursor { position:fixed; width:12px; height:12px; background:var(--red); border-radius:50%; pointer-events:none; z-index:99999; transition:transform 0.1s; mix-blend-mode:difference; }
-.cursor-ring { position:fixed; width:36px; height:36px; border:1.5px solid rgba(255,33,33,0.5); border-radius:50%; pointer-events:none; z-index:99998; transition:all 0.15s ease; }
-
-/* PARTICLES CANVAS */
-#particles-canvas { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; opacity:0.4; }
-
-/* NAVBAR */
-nav {
-  position: fixed; top:0; left:0; right:0; z-index:1000;
-  padding: 18px 40px;
-  display: flex; align-items:center; justify-content:space-between;
-  background: rgba(8,8,8,0.85);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
-  transition: all 0.3s;
-}
-.nav-logo {
-  font-family: var(--font-head);
-  font-size: 1.6rem; font-weight: 800;
-  background: linear-gradient(135deg, #FF2121, #FFD700);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  letter-spacing: -0.5px;
-}
-.nav-logo span { -webkit-text-fill-color: rgba(255,255,255,0.3); font-size:0.9rem; font-weight:400; }
-.nav-links { display:flex; gap:28px; align-items:center; }
-.nav-links a {
-  color: var(--muted); text-decoration:none; font-size:0.85rem; font-weight:500;
-  transition:color 0.2s; letter-spacing:0.3px;
-}
-.nav-links a:hover { color: var(--text); }
-.lang-select {
-  background: var(--glass2); border: 1px solid var(--border); color:var(--text);
-  padding: 6px 12px; border-radius:8px; font-family:var(--font-body); font-size:0.8rem;
-  cursor:pointer; outline:none;
-}
-.lang-select option { background: #1a1a1a; }
-.nav-cta {
-  background: linear-gradient(135deg, var(--red), #c00);
-  color: white; border:none; padding: 10px 22px; border-radius:10px;
-  font-family:var(--font-body); font-size:0.85rem; font-weight:600;
-  cursor:pointer; transition:all 0.25s; letter-spacing:0.3px;
-}
-.nav-cta:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(255,33,33,0.35); }
-.nav-login-btn {
-  background: transparent; color: var(--text); border: 1px solid var(--border);
-  padding: 10px 22px; border-radius:10px; font-family:var(--font-body);
-  font-size:0.85rem; font-weight:600; cursor:pointer; transition:all 0.25s;
-}
-.nav-login-btn:hover { border-color:rgba(255,33,33,0.5); color:var(--red); background:rgba(255,33,33,0.06); }
-
-/* ===== LOGIN MODAL ===== */
-.login-overlay {
-  position:fixed; inset:0; background:rgba(0,0,0,0.92);
-  z-index:10000; display:none; align-items:center; justify-content:center;
-  padding:20px; backdrop-filter:blur(16px);
-}
-.login-overlay.open { display:flex; animation:fadeIn 0.3s ease; }
-
-.login-modal {
-  background: var(--dark3); border:1px solid rgba(255,255,255,0.1);
-  border-radius:28px; width:100%; max-width:460px; overflow:hidden;
-  position:relative; animation:scaleIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
-  box-shadow: 0 40px 100px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,33,33,0.08);
-}
-
-.login-top-bar {
-  height:4px; width:100%;
-  background: linear-gradient(90deg, var(--red), #FF6B35, var(--gold), var(--red));
-  background-size: 200%;
-  animation: shimmer 3s infinite linear;
-}
-
-.login-body { padding: 40px 40px 36px; }
-
-.login-tabs {
-  display:flex; background:rgba(255,255,255,0.04); border-radius:12px;
-  padding:4px; margin-bottom:28px; gap:4px;
-}
-.login-tab {
-  flex:1; padding:10px; border:none; background:transparent; color:var(--muted);
-  font-family:var(--font-body); font-size:0.88rem; font-weight:600; cursor:pointer;
-  border-radius:9px; transition:all 0.25s;
-}
-.login-tab.active {
-  background: linear-gradient(135deg, rgba(255,33,33,0.2), rgba(255,33,33,0.08));
-  color:var(--text); border:1px solid rgba(255,33,33,0.25);
-}
-
-.login-header { text-align:center; margin-bottom:28px; }
-.login-header .lh-icon { font-size:2.4rem; margin-bottom:10px; display:block; }
-.login-header h2 { font-family:var(--font-head); font-size:1.6rem; font-weight:800; margin-bottom:6px; }
-.login-header p { color:var(--muted); font-size:0.85rem; }
-
-/* GOOGLE BTN */
-.google-btn {
-  width:100%; padding:14px 20px; background:white; border:none; border-radius:14px;
-  display:flex; align-items:center; justify-content:center; gap:12px;
-  font-family:var(--font-body); font-size:0.95rem; font-weight:600; color:#1a1a1a;
-  cursor:pointer; transition:all 0.3s; margin-bottom:20px;
-  box-shadow:0 2px 12px rgba(0,0,0,0.3);
-}
-.google-btn:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(0,0,0,0.4); background:#f8f8f8; }
-.google-btn svg { width:20px; height:20px; flex-shrink:0; }
-
-.divider {
-  display:flex; align-items:center; gap:12px; margin-bottom:20px;
-}
-.divider::before, .divider::after { content:''; flex:1; height:1px; background:var(--border); }
-.divider span { color:var(--muted); font-size:0.78rem; font-weight:500; white-space:nowrap; }
-
-/* FORM FIELDS */
-.login-field { margin-bottom:16px; }
-.login-field label {
-  display:block; font-size:0.78rem; font-weight:600; color:var(--muted);
-  margin-bottom:7px; letter-spacing:0.4px; text-transform:uppercase;
-}
-.login-input-wrap { position:relative; }
-.login-input {
-  width:100%; background:rgba(255,255,255,0.05); border:1.5px solid var(--border);
-  border-radius:12px; padding:14px 44px 14px 16px; color:var(--text);
-  font-family:var(--font-body); font-size:0.95rem; outline:none;
-  transition:all 0.25s;
-}
-.login-input:focus { border-color:rgba(255,33,33,0.5); background:rgba(255,33,33,0.04); box-shadow:0 0 0 3px rgba(255,33,33,0.08); }
-.login-input::placeholder { color:rgba(255,255,255,0.2); }
-.input-icon {
-  position:absolute; right:14px; top:50%; transform:translateY(-50%);
-  font-size:1rem; pointer-events:none; opacity:0.4;
-}
-.eye-toggle {
-  position:absolute; right:14px; top:50%; transform:translateY(-50%);
-  background:none; border:none; cursor:pointer; color:var(--muted);
-  font-size:0.9rem; padding:0; transition:color 0.2s;
-}
-.eye-toggle:hover { color:var(--text); }
-
-.login-extras {
-  display:flex; align-items:center; justify-content:space-between;
-  margin-bottom:20px; margin-top:-4px;
-}
-.remember-wrap { display:flex; align-items:center; gap:8px; cursor:pointer; }
-.remember-wrap input[type=checkbox] { accent-color:var(--red); width:15px; height:15px; cursor:pointer; }
-.remember-wrap span { font-size:0.82rem; color:var(--muted); }
-.forgot-link { font-size:0.82rem; color:var(--red); text-decoration:none; font-weight:600; transition:opacity 0.2s; }
-.forgot-link:hover { opacity:0.75; }
-
-.login-submit {
-  width:100%; padding:15px; background:linear-gradient(135deg, var(--red), #c00);
-  border:none; border-radius:14px; color:white; font-family:var(--font-body);
-  font-size:1rem; font-weight:700; cursor:pointer; transition:all 0.3s;
-  letter-spacing:0.3px; position:relative; overflow:hidden;
-}
-.login-submit::after {
-  content:''; position:absolute; inset:0; background:linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
-  opacity:0; transition:opacity 0.3s;
-}
-.login-submit:hover { transform:translateY(-2px); box-shadow:0 10px 32px rgba(255,33,33,0.45); }
-.login-submit:hover::after { opacity:1; }
-.login-submit:active { transform:translateY(0); }
-
-.login-footer-txt {
-  text-align:center; margin-top:20px; font-size:0.82rem; color:var(--muted);
-}
-.login-footer-txt a { color:var(--red); font-weight:700; text-decoration:none; cursor:pointer; }
-.login-footer-txt a:hover { text-decoration:underline; }
-
-.login-close {
-  position:absolute; top:16px; right:16px; z-index:10;
-  background:rgba(255,255,255,0.06); border:1px solid var(--border);
-  color:var(--muted); width:34px; height:34px; border-radius:50%;
-  cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center;
-  transition:all 0.2s;
-}
-.login-close:hover { background:rgba(255,33,33,0.15); color:var(--red); border-color:rgba(255,33,33,0.3); }
-
-/* Password strength */
-.pw-strength { margin-top:8px; }
-.pw-strength-bar { height:3px; border-radius:10px; background:var(--border); overflow:hidden; }
-.pw-strength-fill { height:100%; border-radius:10px; width:0%; transition:all 0.3s; }
-.pw-strength-text { font-size:0.72rem; color:var(--muted); margin-top:4px; }
-
-/* Success login state */
-.login-success {
-  text-align:center; padding:20px 0 10px;
-}
-.login-success .success-icon { font-size:4rem; display:block; animation:pop 0.5s ease; margin-bottom:16px; }
-.login-success h3 { font-family:var(--font-head); font-size:1.5rem; font-weight:800; margin-bottom:8px; }
-.login-success p { color:var(--muted); font-size:0.88rem; }
-
-/* Signup extra fields */
-.signup-name-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-
-/* HERO */
-.hero {
-  min-height: 100vh; display:flex; align-items:center; justify-content:center;
-  position:relative; z-index:1; text-align:center; padding: 100px 20px 60px;
-  flex-direction:column;
-}
-.hero-badge {
-  display: inline-flex; align-items:center; gap:8px;
-  background: rgba(255,33,33,0.12); border:1px solid rgba(255,33,33,0.3);
-  padding: 7px 16px; border-radius:100px; font-size:0.78rem; font-weight:600;
-  color: var(--red); margin-bottom:32px; letter-spacing:0.5px;
-  animation: fadeInDown 0.8s ease forwards;
-}
-.hero-badge .dot { width:6px; height:6px; border-radius:50%; background:var(--red); animation:pulse 1.5s infinite; }
-@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(1.4)} }
-
-.hero h1 {
-  font-family: var(--font-head);
-  font-size: clamp(2.8rem, 7vw, 6rem);
-  font-weight: 800; line-height: 1.05; letter-spacing:-2px;
-  margin-bottom: 24px;
-  animation: fadeInUp 0.9s 0.2s ease both;
-}
-.hero h1 .line2 {
-  background: linear-gradient(135deg, #FF2121 0%, #FFD700 60%, #FF2121 100%);
-  background-size:200%;
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-  animation: shimmer 3s infinite linear;
-}
-@keyframes shimmer { 0%{background-position:0%} 100%{background-position:200%} }
-
-.hero-sub {
-  font-size: clamp(1rem, 2vw, 1.2rem); color: var(--muted); max-width:560px; margin:0 auto 44px;
-  font-weight:400; line-height:1.7;
-  animation: fadeInUp 0.9s 0.4s ease both;
-}
-.hero-btns {
-  display:flex; gap:14px; justify-content:center; flex-wrap:wrap;
-  animation: fadeInUp 0.9s 0.6s ease both;
-}
-.btn-primary {
-  background: linear-gradient(135deg, var(--red), #c00);
-  color:white; border:none; padding:15px 36px; border-radius:14px;
-  font-family:var(--font-body); font-size:1rem; font-weight:700; cursor:pointer;
-  transition:all 0.3s; position:relative; overflow:hidden;
-}
-.btn-primary::after {
-  content:''; position:absolute; inset:-2px; background:linear-gradient(135deg,var(--red),var(--gold));
-  border-radius:16px; z-index:-1; opacity:0; transition:opacity 0.3s; filter:blur(12px);
-}
-.btn-primary:hover { transform:translateY(-3px); box-shadow:0 12px 36px rgba(255,33,33,0.4); }
-.btn-primary:hover::after { opacity:1; }
-.btn-secondary {
-  background: var(--glass2); color:var(--text); border:1px solid var(--border);
-  padding:15px 36px; border-radius:14px; font-family:var(--font-body);
-  font-size:1rem; font-weight:600; cursor:pointer; transition:all 0.3s;
-  backdrop-filter:blur(10px);
-}
-.btn-secondary:hover { background:var(--glass); border-color:rgba(255,255,255,0.2); transform:translateY(-3px); }
-
-.hero-stats {
-  display:flex; gap:48px; justify-content:center; margin-top:64px; flex-wrap:wrap;
-  animation: fadeInUp 0.9s 0.8s ease both;
-}
-.stat { text-align:center; }
-.stat-num { font-family:var(--font-head); font-size:2.2rem; font-weight:800; color:var(--red); }
-.stat-label { font-size:0.8rem; color:var(--muted); margin-top:3px; letter-spacing:0.5px; }
-
-/* SCROLLING TICKER */
-.ticker-wrap {
-  overflow:hidden; padding:14px 0; background:rgba(255,33,33,0.08);
-  border-top:1px solid rgba(255,33,33,0.2); border-bottom:1px solid rgba(255,33,33,0.2);
-  position:relative; z-index:1;
-}
-.ticker {
-  display:flex; gap:48px; white-space:nowrap;
-  animation: ticker 20s linear infinite;
-}
-.ticker span { font-size:0.82rem; font-weight:600; color:var(--muted); letter-spacing:0.8px; text-transform:uppercase; }
-.ticker span em { color:var(--red); font-style:normal; margin-right:8px; }
-@keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
-
-/* SECTIONS */
-section { position:relative; z-index:1; }
-.section-label {
-  font-size:0.72rem; font-weight:700; color:var(--red); letter-spacing:2.5px;
-  text-transform:uppercase; margin-bottom:12px;
-}
-.section-title {
-  font-family:var(--font-head); font-size:clamp(2rem,4vw,3rem); font-weight:800;
-  letter-spacing:-1px; line-height:1.1; margin-bottom:16px;
-}
-.section-sub { color:var(--muted); font-size:1rem; line-height:1.7; max-width:520px; }
-
-/* PROBLEMS SECTION */
-.problems { padding: 100px 40px; max-width:1200px; margin:0 auto; }
-.problems-header { text-align:center; margin-bottom:64px; }
-.problems-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:20px;
-}
-.problem-card {
-  background: var(--dark3); border:1px solid var(--border);
-  border-radius:20px; padding:28px; transition:all 0.4s;
-  position:relative; overflow:hidden; cursor:pointer;
-  opacity:0; transform:translateY(30px);
-}
-.problem-card.visible { opacity:1; transform:translateY(0); transition:opacity 0.6s, transform 0.6s; }
-.problem-card::before {
-  content:''; position:absolute; inset:0; opacity:0;
-  background:radial-gradient(circle at 50% 0%, rgba(255,33,33,0.12), transparent 70%);
-  transition:opacity 0.4s;
-}
-.problem-card:hover { border-color:rgba(255,33,33,0.4); transform:translateY(-6px); }
-.problem-card:hover::before { opacity:1; }
-.problem-icon { font-size:2.2rem; margin-bottom:16px; display:block; }
-.problem-card h3 { font-family:var(--font-head); font-size:1.1rem; font-weight:700; margin-bottom:10px; }
-.problem-card p { color:var(--muted); font-size:0.88rem; line-height:1.65; }
-.problem-tag {
-  display:inline-block; margin-top:14px; padding:4px 12px;
-  background:rgba(255,33,33,0.1); border:1px solid rgba(255,33,33,0.2);
-  border-radius:100px; font-size:0.72rem; font-weight:600; color:var(--red);
-}
-
-/* ANALYZER */
-.analyzer-section {
-  padding:100px 40px; background:linear-gradient(180deg, transparent, rgba(255,33,33,0.04), transparent);
-}
-.analyzer-wrap { max-width:820px; margin:0 auto; }
-.analyzer-box {
-  background: var(--dark3); border:1px solid rgba(255,33,33,0.25);
-  border-radius:24px; padding:40px; margin-top:40px;
-  box-shadow: 0 0 60px rgba(255,33,33,0.08);
-}
-.analyzer-box h3 { font-family:var(--font-head); font-size:1.3rem; font-weight:700; margin-bottom:20px; }
-.analyzer-input-wrap { display:flex; gap:12px; margin-bottom:20px; }
-.analyzer-input {
-  flex:1; background:rgba(255,255,255,0.04); border:1px solid var(--border);
-  border-radius:12px; padding:14px 18px; color:var(--text); font-family:var(--font-body);
-  font-size:0.95rem; outline:none; transition:border 0.2s;
-}
-.analyzer-input:focus { border-color:rgba(255,33,33,0.5); }
-.analyze-btn {
-  background:linear-gradient(135deg,var(--red),#c00); color:white; border:none;
-  padding:14px 28px; border-radius:12px; font-family:var(--font-body);
-  font-size:0.9rem; font-weight:700; cursor:pointer; transition:all 0.3s; white-space:nowrap;
-}
-.analyze-btn:hover { transform:scale(1.04); box-shadow:0 8px 24px rgba(255,33,33,0.4); }
-.analyzer-tags { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
-.atag {
-  background:var(--glass2); border:1px solid var(--border); padding:6px 14px;
-  border-radius:100px; font-size:0.78rem; cursor:pointer; transition:all 0.2s; font-weight:500;
-}
-.atag:hover, .atag.active { background:rgba(255,33,33,0.15); border-color:rgba(255,33,33,0.4); color:var(--red); }
-.analyzer-result {
-  background:rgba(255,33,33,0.06); border:1px solid rgba(255,33,33,0.15);
-  border-radius:16px; padding:24px; display:none;
-}
-.analyzer-result.show { display:block; animation:fadeInUp 0.4s ease; }
-.result-head { font-weight:700; color:var(--red); margin-bottom:12px; font-size:0.9rem; letter-spacing:0.5px; }
-.result-steps { list-style:none; }
-.result-steps li { padding:8px 0; font-size:0.9rem; color:var(--muted); border-bottom:1px solid rgba(255,255,255,0.05); display:flex; gap:10px; }
-.result-steps li:last-child { border:none; }
-.result-steps li::before { content:'→'; color:var(--red); font-weight:700; }
-
-/* PRICING */
-.pricing-section { padding:100px 40px; text-align:center; }
-.pricing-cards { display:flex; gap:24px; justify-content:center; flex-wrap:wrap; margin-top:50px; max-width:900px; margin-left:auto; margin-right:auto; }
-
-.price-card {
-  background:var(--dark3); border:1px solid var(--border);
-  border-radius:24px; padding:36px 32px; flex:1; min-width:280px; max-width:380px;
-  position:relative; transition:all 0.4s;
-}
-.price-card:hover { transform:translateY(-8px); }
-.price-card.popular {
-  border-color:rgba(255,215,0,0.4);
-  background:linear-gradient(135deg, rgba(255,33,33,0.08), rgba(255,215,0,0.04));
-  box-shadow:0 0 60px rgba(255,215,0,0.1);
-}
-.popular-badge {
-  position:absolute; top:-14px; left:50%; transform:translateX(-50%);
-  background:linear-gradient(135deg,#FF2121,#FFD700); color:#000;
-  padding:5px 18px; border-radius:100px; font-size:0.72rem; font-weight:800;
-  letter-spacing:1px; white-space:nowrap;
-}
-.plan-name { font-family:var(--font-head); font-size:1.1rem; font-weight:700; margin-bottom:8px; }
-.plan-price { font-family:var(--font-head); font-size:3.2rem; font-weight:800; line-height:1; margin:16px 0 6px; }
-.plan-price.gold { background:linear-gradient(135deg,#FF2121,#FFD700); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-.plan-og { font-size:1rem; color:var(--muted); text-decoration:line-through; margin-bottom:4px; }
-.plan-period { font-size:0.8rem; color:var(--muted); margin-bottom:6px; }
-.offer-pill {
-  display:inline-block; background:rgba(255,215,0,0.15); border:1px solid rgba(255,215,0,0.35);
-  color:#FFD700; padding:5px 14px; border-radius:100px; font-size:0.72rem; font-weight:700;
-  margin-bottom:24px; letter-spacing:0.5px; animation:glow 2s infinite;
-}
-@keyframes glow { 0%,100%{box-shadow:0 0 8px rgba(255,215,0,0.2)} 50%{box-shadow:0 0 20px rgba(255,215,0,0.5)} }
-.plan-features { list-style:none; text-align:left; margin-bottom:28px; }
-.plan-features li { padding:9px 0; font-size:0.88rem; display:flex; gap:10px; align-items:center; border-bottom:1px solid rgba(255,255,255,0.05); }
-.plan-features li:last-child { border:none; }
-.check { width:18px; height:18px; background:rgba(255,33,33,0.2); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.6rem; color:var(--red); flex-shrink:0; }
-.check.gold-check { background:rgba(255,215,0,0.15); color:#FFD700; }
-.plan-btn {
-  width:100%; padding:14px; border-radius:12px; font-family:var(--font-body);
-  font-size:0.95rem; font-weight:700; cursor:pointer; transition:all 0.3s; border:none;
-}
-.plan-btn.free-btn { background:var(--glass2); color:var(--text); border:1px solid var(--border); }
-.plan-btn.free-btn:hover { background:var(--glass); }
-.plan-btn.premium-btn {
-  background:linear-gradient(135deg,#FF2121,#c00);
-  color:white; box-shadow:0 6px 24px rgba(255,33,33,0.3);
-}
-.plan-btn.premium-btn:hover { transform:scale(1.03); box-shadow:0 10px 36px rgba(255,33,33,0.5); }
-
-/* FEATURES SHOWCASE */
-.features-section { padding:100px 40px; max-width:1200px; margin:0 auto; }
-.features-grid { display:grid; grid-template-columns: 1fr 1fr; gap:24px; margin-top:50px; }
-.feature-big {
-  background:var(--dark3); border:1px solid var(--border); border-radius:24px; padding:36px;
-  grid-row: span 2; transition:all 0.4s; position:relative; overflow:hidden;
-}
-.feature-big::after {
-  content:''; position:absolute; bottom:-60px; right:-60px;
-  width:200px; height:200px; border-radius:50%;
-  background:radial-gradient(circle, rgba(255,33,33,0.15), transparent);
-  transition:all 0.4s;
-}
-.feature-big:hover { border-color:rgba(255,33,33,0.3); transform:translateY(-4px); }
-.feature-big:hover::after { transform:scale(1.5); }
-.feature-small {
-  background:var(--dark3); border:1px solid var(--border); border-radius:20px; padding:28px;
-  transition:all 0.4s; position:relative; overflow:hidden;
-}
-.feature-small:hover { border-color:rgba(255,215,0,0.3); transform:translateY(-4px); }
-.feature-icon-big { font-size:3rem; margin-bottom:20px; display:block; }
-.feature-icon-sm { font-size:2rem; margin-bottom:14px; display:block; }
-.feature-big h3 { font-family:var(--font-head); font-size:1.5rem; font-weight:800; margin-bottom:12px; }
-.feature-small h3 { font-family:var(--font-head); font-size:1.1rem; font-weight:700; margin-bottom:8px; }
-.feature-big p, .feature-small p { color:var(--muted); font-size:0.88rem; line-height:1.65; }
-.feature-tag-list { display:flex; flex-wrap:wrap; gap:6px; margin-top:16px; }
-.ftag { background:rgba(255,33,33,0.1); border:1px solid rgba(255,33,33,0.2); color:var(--red); padding:4px 10px; border-radius:6px; font-size:0.72rem; font-weight:600; }
-
-/* CHAT WIDGET */
-.chat-widget {
-  position:fixed; bottom:30px; right:30px; z-index:9000;
-}
-.chat-btn {
-  width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,var(--red),#c00);
-  border:none; cursor:pointer; display:flex; align-items:center; justify-content:center;
-  font-size:1.4rem; box-shadow:0 8px 32px rgba(255,33,33,0.5);
-  transition:all 0.3s; animation:float 3s ease-in-out infinite;
-}
-@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-.chat-btn:hover { transform:scale(1.1) translateY(0) !important; }
-.chat-box {
-  position:absolute; bottom:75px; right:0; width:340px;
-  background:var(--dark3); border:1px solid rgba(255,33,33,0.3);
-  border-radius:20px; overflow:hidden; display:none; flex-direction:column;
-  box-shadow:0 20px 60px rgba(0,0,0,0.6);
-}
-.chat-box.open { display:flex; animation:fadeInUp 0.3s ease; }
-.chat-header {
-  background:linear-gradient(135deg,var(--red),#900); padding:16px 18px;
-  display:flex; align-items:center; gap:10px;
-}
-.chat-header .avatar { width:34px; height:34px; background:rgba(255,255,255,0.2); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1rem; }
-.chat-header-info h4 { font-size:0.9rem; font-weight:700; }
-.chat-header-info p { font-size:0.72rem; opacity:0.7; }
-.chat-messages { height:240px; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:10px; }
-.chat-messages::-webkit-scrollbar { width:4px; }
-.chat-messages::-webkit-scrollbar-track { background:transparent; }
-.chat-messages::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:10px; }
-.msg { max-width:80%; padding:10px 14px; border-radius:14px; font-size:0.85rem; line-height:1.5; }
-.msg.bot { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); align-self:flex-start; }
-.msg.user { background:linear-gradient(135deg,var(--red),#900); align-self:flex-end; }
-.chat-lock { text-align:center; padding:12px; background:rgba(255,215,0,0.06); border-top:1px solid rgba(255,215,0,0.15); font-size:0.75rem; color:#FFD700; font-weight:600; }
-.chat-input-wrap { display:flex; gap:8px; padding:12px; border-top:1px solid var(--border); }
-.chat-input {
-  flex:1; background:var(--glass2); border:1px solid var(--border); border-radius:10px;
-  padding:10px 14px; color:var(--text); font-family:var(--font-body); font-size:0.85rem; outline:none;
-}
-.chat-send {
-  background:var(--red); border:none; color:white; width:36px; height:36px;
-  border-radius:10px; cursor:pointer; font-size:1rem; transition:all 0.2s;
-}
-.chat-send:hover { background:#c00; transform:scale(1.05); }
-
-/* PAYMENT MODAL */
-.modal-overlay {
-  position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999;
-  display:none; align-items:center; justify-content:center; padding:20px;
-  backdrop-filter:blur(10px);
-}
-.modal-overlay.open { display:flex; animation:fadeIn 0.3s ease; }
-.modal {
-  background:var(--dark3); border:1px solid rgba(255,215,0,0.3);
-  border-radius:28px; padding:40px; max-width:440px; width:100%;
-  position:relative; animation:scaleIn 0.3s ease;
-}
-@keyframes scaleIn { 0%{transform:scale(0.92);opacity:0} 100%{transform:scale(1);opacity:1} }
-.modal-close {
-  position:absolute; top:16px; right:16px; background:var(--glass2); border:none;
-  color:var(--text); width:32px; height:32px; border-radius:50%; cursor:pointer;
-  font-size:1.1rem; display:flex; align-items:center; justify-content:center;
-}
-.modal h3 { font-family:var(--font-head); font-size:1.5rem; font-weight:800; margin-bottom:6px; }
-.modal-sub { color:var(--muted); font-size:0.88rem; margin-bottom:28px; }
-.modal-price { display:flex; align-items:baseline; gap:10px; margin-bottom:24px; }
-.modal-og { color:var(--muted); text-decoration:line-through; font-size:1.2rem; }
-.modal-final { font-family:var(--font-head); font-size:3rem; font-weight:800; background:linear-gradient(135deg,var(--red),#FFD700); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-.modal-final-label { font-size:0.8rem; color:var(--muted); }
-.upi-box {
-  background:rgba(255,255,255,0.04); border:1.5px dashed rgba(255,215,0,0.3);
-  border-radius:16px; padding:24px; text-align:center; margin-bottom:20px;
-}
-.upi-qr { width:140px; height:140px; margin:0 auto 12px; background:white; border-radius:12px; display:flex; align-items:center; justify-content:center; }
-.upi-qr svg { width:120px; height:120px; }
-.upi-id { font-family:'Courier New', monospace; font-size:0.95rem; font-weight:700; color:#FFD700; background:rgba(255,215,0,0.08); padding:8px 16px; border-radius:8px; display:inline-block; margin-top:8px; }
-.upi-note { font-size:0.75rem; color:var(--muted); margin-top:10px; }
-.modal-confirm-btn {
-  width:100%; padding:15px; background:linear-gradient(135deg,var(--red),#c00);
-  border:none; border-radius:14px; color:white; font-family:var(--font-body);
-  font-size:0.95rem; font-weight:700; cursor:pointer; transition:all 0.3s;
-}
-.modal-confirm-btn:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(255,33,33,0.4); }
-
-/* TESTIMONIALS */
-.testimonials { padding:100px 40px; overflow:hidden; }
-.testimonials-header { text-align:center; margin-bottom:50px; }
-.testimonials-track { display:flex; gap:20px; animation:slide 30s linear infinite; width:max-content; }
-.testimonials-track:hover { animation-play-state:paused; }
-.tcard {
-  background:var(--dark3); border:1px solid var(--border); border-radius:20px;
-  padding:28px; width:300px; flex-shrink:0; transition:all 0.3s;
-}
-.tcard:hover { border-color:rgba(255,33,33,0.3); transform:translateY(-4px); }
-.tcard-header { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
-.tcard-avatar { width:42px; height:42px; border-radius:50%; background:linear-gradient(135deg,var(--red),#FFD700); display:flex; align-items:center; justify-content:center; font-size:1rem; font-weight:700; }
-.tcard-name { font-weight:700; font-size:0.9rem; }
-.tcard-subs { font-size:0.75rem; color:var(--muted); }
-.stars { color:#FFD700; font-size:0.85rem; margin-bottom:10px; }
-.tcard p { color:var(--muted); font-size:0.85rem; line-height:1.6; }
-@keyframes slide { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
-
-/* LANGUAGES BAR */
-.langs-section { padding:40px; text-align:center; }
-.langs-grid { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:20px; }
-.lang-pill {
-  background:var(--glass2); border:1px solid var(--border); padding:6px 16px;
-  border-radius:100px; font-size:0.8rem; color:var(--muted); transition:all 0.2s;
-}
-.lang-pill:hover { border-color:rgba(255,33,33,0.4); color:var(--red); }
-
-/* FOOTER */
-footer {
-  padding:50px 40px 30px; border-top:1px solid var(--border); text-align:center;
-}
-.footer-logo { font-family:var(--font-head); font-size:2rem; font-weight:800; background:linear-gradient(135deg,var(--red),var(--gold)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-.footer-tagline { color:var(--muted); font-size:0.85rem; margin-top:6px; }
-.footer-links { display:flex; gap:24px; justify-content:center; margin:24px 0; flex-wrap:wrap; }
-.footer-links a { color:var(--muted); text-decoration:none; font-size:0.82rem; transition:color 0.2s; }
-.footer-links a:hover { color:var(--text); }
-.footer-copy { color:rgba(255,255,255,0.2); font-size:0.75rem; margin-top:20px; }
-
-/* ANIMATIONS */
-@keyframes fadeIn { 0%{opacity:0} 100%{opacity:1} }
-@keyframes fadeInUp { 0%{opacity:0;transform:translateY(24px)} 100%{opacity:1;transform:translateY(0)} }
-@keyframes fadeInDown { 0%{opacity:0;transform:translateY(-20px)} 100%{opacity:1;transform:translateY(0)} }
-
-/* SCROLL REVEAL */
-.reveal { opacity:0; transform:translateY(30px); transition:opacity 0.7s ease, transform 0.7s ease; }
-.reveal.visible { opacity:1; transform:translateY(0); }
-
-/* GLOW LINES */
-.glow-line {
-  position:absolute; height:1px; background:linear-gradient(90deg,transparent,rgba(255,33,33,0.5),transparent);
-  width:100%; top:0; left:0;
-}
-
-/* RESPONSIVE */
-@media(max-width:768px) {
-  nav { padding:14px 20px; }
-  .nav-links { display:none; }
-  .features-grid { grid-template-columns:1fr; }
-  .feature-big { grid-row:unset; }
-  .problems { padding:60px 20px; }
-  .analyzer-section { padding:60px 20px; }
-  .pricing-section { padding:60px 20px; }
-  .features-section { padding:60px 20px; }
-  .analyzer-input-wrap { flex-direction:column; }
-  .chat-box { width:300px; }
-}
-
-/* NOISE OVERLAY */
-body::before {
-  content:''; position:fixed; inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-  opacity:0.018; pointer-events:none; z-index:9997;
-}
-
-/* SUCCESS SCREEN */
-.success-screen {
-  text-align:center; padding:20px;
-}
-.success-screen .check-big { font-size:4rem; margin-bottom:16px; display:block; animation:pop 0.5s ease; }
-@keyframes pop { 0%{transform:scale(0)} 70%{transform:scale(1.2)} 100%{transform:scale(1)} }
-.success-screen h3 { font-family:var(--font-head); font-size:1.6rem; font-weight:800; margin-bottom:8px; }
-.success-screen p { color:var(--muted); font-size:0.9rem; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CreatorsFix - YouTube creators ke liye AI-powered growth platform. Views, subscribers, aur viral videos ke liye professional analytics aur strategies.">
+    <meta name="keywords" content="YouTube growth, creator tools, video analytics, subscriber growth, viral videos">
+    <meta name="author" content="CreatorsFix Team">
+    <meta property="og:title" content="CreatorsFix - YouTube Creator Growth Platform">
+    <meta property="og:description" content="AI-powered YouTube growth solutions for creators. Get analytics, strategies, and tools.">
+    <meta property="og:image" content="https://creatorsfixx.com/og-image.png">
+    <meta property="og:url" content="https://creatorsfixx.com">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>CreatorsFix - YouTube Creators Ka Growth Partner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #FF6B35;
+            --secondary: #004E89;
+            --dark: #1a1a1a;
+            --light: #f5f5f5;
+            --success: #27AE60;
+            --warning: #F39C12;
+            --danger: #E74C3C;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: var(--light);
+            overflow-x: hidden;
+        }
+        
+        /* Navigation */
+        nav {
+            background: linear-gradient(135deg, var(--secondary) 0%, #0d3b66 100%);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .btn-login {
+            background: var(--primary);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .btn-login:hover {
+            background: #ff5722;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,107,53,0.3);
+        }
+        
+        .lang-selector {
+            background: transparent;
+            color: white;
+            border: 2px solid var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--secondary) 0%, #0d3b66 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: slideDown 0.8s ease;
+        }
+        
+        .hero-content p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            animation: slideUp 0.8s ease;
+        }
+        
+        .cta-btn {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            animation: slideUp 0.8s ease 0.2s both;
+        }
+        
+        .cta-btn:hover {
+            background: #ff5722;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255,107,53,0.4);
+        }
+        
+        /* Stats Section */
+        .stats {
+            background: white;
+            padding: 3rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, var(--secondary) 0%, #0d3b66 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--secondary);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border-top: 4px solid var(--primary);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card h3 {
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+        
+        /* Problem Analyzer */
+        .analyzer {
+            background: linear-gradient(135deg, #f5f5f5 0%, white 100%);
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .analyzer h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: var(--secondary);
+        }
+        
+        .analyzer-tags {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .tag-btn {
+            padding: 1rem;
+            border: 2px solid var(--secondary);
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            color: var(--secondary);
+        }
+        
+        .tag-btn:hover,
+        .tag-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .analyzer-result {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-top: 2rem;
+            display: none;
+            animation: slideUp 0.5s ease;
+        }
+        
+        .analyzer-result.show {
+            display: block;
+        }
+        
+        .result-title {
+            color: var(--secondary);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Chat Section */
+        .chat-section {
+            background: white;
+            padding: 3rem 2rem;
+            max-width: 800px;
+            margin: 2rem auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            cursor: pointer;
+        }
+        
+        .chat-header h3 {
+            color: var(--secondary);
+        }
+        
+        .chat-toggle {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .chat-box {
+            display: none;
+            border: 2px solid var(--secondary);
+            border-radius: 5px;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-box.open {
+            display: flex;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            background: #f9f9f9;
+        }
+        
+        .message {
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            border-radius: 5px;
+            max-width: 80%;
+        }
+        
+        .message.user {
+            background: var(--secondary);
+            color: white;
+            margin-left: auto;
+        }
+        
+        .message.bot {
+            background: #e0e0e0;
+            color: var(--dark);
+        }
+        
+        .chat-input-area {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem;
+            border-top: 2px solid var(--secondary);
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid var(--secondary);
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .chat-send {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            animation: slideDown 0.3s ease;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--secondary);
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+            font-weight: bold;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--secondary);
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .qr-code {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .qr-code img {
+            max-width: 200px;
+            border-radius: 10px;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--secondary);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        /* Animations */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes countUp {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+            
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .features-grid,
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-
-<!-- CURSOR -->
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
-
-<!-- PARTICLES -->
-<canvas id="particles-canvas"></canvas>
-
-<!-- NAVBAR -->
-<nav>
-  <div class="nav-logo">CreatorFix <span>™</span></div>
-  <div class="nav-links">
-    <a href="#problems">Problems</a>
-    <a href="#analyzer">Analyzer</a>
-    <a href="#pricing">Pricing</a>
-    <a href="#features">Features</a>
-  </div>
-  <div style="display:flex;gap:12px;align-items:center;">
-    <select class="lang-select" id="langSelect" onchange="changeLang(this.value)">
-      <option value="en">🇬🇧 English</option>
-      <option value="hi">🇮🇳 हिंदी</option>
-      <option value="ta">தமிழ்</option>
-      <option value="te">తెలుగు</option>
-      <option value="bn">বাংলা</option>
-      <option value="mr">मराठी</option>
-      <option value="gu">ગુજરાતી</option>
-      <option value="kn">ಕನ್ನಡ</option>
-      <option value="ml">മലയാളം</option>
-      <option value="pa">ਪੰਜਾਬੀ</option>
-      <option value="ur">اردو</option>
-      <option value="or">ଓଡ଼ିଆ</option>
-      <option value="as">অসমীয়া</option>
-    </select>
-    <button class="nav-login-btn" onclick="openLoginModal()">Login</button>
-    <button class="nav-cta" onclick="openModal()">Get Premium — ₹49</button>
-  </div>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-badge">
-    <span class="dot"></span>
-    <span id="badge-text">🔴 LIVE — India's #1 YouTube Creator Support Platform</span>
-  </div>
-  <h1>
-    <span id="hero-line1">Stop Struggling.</span><br>
-    <span class="line2" id="hero-line2">Start Creating.</span>
-  </h1>
-  <p class="hero-sub" id="hero-sub">Every YouTube problem — Copyright strikes, SEO failures, Monetization blocks, Growth stagnation — solved in one place. Expert guidance, AI-powered analysis, and real results.</p>
-  <div class="hero-btns">
-    <button class="btn-primary" onclick="openModal()" id="hero-cta1">🚀 Get Premium — Only ₹49</button>
-    <button class="btn-secondary" onclick="document.getElementById('analyzer').scrollIntoView({behavior:'smooth'})" id="hero-cta2">🔍 Analyze My Problem</button>
-  </div>
-  <div class="hero-stats">
-    <div class="stat"><div class="stat-num" id="c1">0</div><div class="stat-label" id="s1">Creators Helped</div></div>
-    <div class="stat"><div class="stat-num" id="c2">0</div><div class="stat-label" id="s2">Problems Solved</div></div>
-    <div class="stat"><div class="stat-num" id="c3">0</div><div class="stat-label" id="s3">Expert Advisors</div></div>
-    <div class="stat"><div class="stat-num" id="c4">0</div><div class="stat-label" id="s4">Success Rate</div></div>
-  </div>
-</section>
-
-<!-- TICKER -->
-<div class="ticker-wrap">
-  <div class="ticker" id="ticker">
-    <span><em>✓</em>SEO Optimization</span>
-    <span><em>✓</em>Copyright Strike Removal</span>
-    <span><em>✓</em>Monetization Setup</span>
-    <span><em>✓</em>Channel Growth Strategy</span>
-    <span><em>✓</em>Thumbnail Optimization</span>
-    <span><em>✓</em>Algorithm Mastery</span>
-    <span><em>✓</em>Community Building</span>
-    <span><em>✓</em>Brand Deals</span>
-    <span><em>✓</em>Live Support</span>
-    <span><em>✓</em>Analytics Insights</span>
-    <!-- Duplicate for seamless loop -->
-    <span><em>✓</em>SEO Optimization</span>
-    <span><em>✓</em>Copyright Strike Removal</span>
-    <span><em>✓</em>Monetization Setup</span>
-    <span><em>✓</em>Channel Growth Strategy</span>
-    <span><em>✓</em>Thumbnail Optimization</span>
-    <span><em>✓</em>Algorithm Mastery</span>
-    <span><em>✓</em>Community Building</span>
-    <span><em>✓</em>Brand Deals</span>
-    <span><em>✓</em>Live Support</span>
-    <span><em>✓</em>Analytics Insights</span>
-  </div>
-</div>
-
-<!-- PROBLEMS -->
-<section id="problems">
-<div class="problems">
-  <div class="problems-header reveal">
-    <div class="section-label" id="prob-label">Problems We Solve</div>
-    <h2 class="section-title" id="prob-title">Every YouTube <span style="color:var(--red)">Pain Point</span> — Eliminated.</h2>
-    <p class="section-sub" style="margin:0 auto" id="prob-sub">Whether you're a new creator or a seasoned pro, we have the exact solution for every hurdle YouTube throws at you.</p>
-  </div>
-  <div class="problems-grid">
-    <div class="problem-card reveal">
-      <span class="problem-icon">⚠️</span>
-      <h3>Copyright Strikes</h3>
-      <p>Got a copyright strike? We guide you step by step — from filing counter-notifications to disputing false claims and protecting future uploads.</p>
-      <span class="problem-tag">Urgent Fix</span>
-    </div>
-    <div class="problem-card reveal">
-      <span class="problem-icon">📈</span>
-      <h3>Channel Not Growing</h3>
-      <p>Stuck at the same subscriber count for months? We diagnose your channel's exact weaknesses and give you a personalized growth blueprint.</p>
-      <span class="problem-tag">Growth</span>
-    </div>
-    <div class="problem-card reveal">
-      <span class="problem-icon">🔍</span>
-      <h3>SEO & Discoverability</h3>
-      <p>Your videos aren't showing up in search? We fix your titles, tags, descriptions, and metadata so YouTube's algorithm finds and recommends you.</p>
-      <span class="problem-tag">SEO Fix</span>
-    </div>
-    <div class="problem-card reveal">
-      <span class="problem-icon">💰</span>
-      <h3>Monetization Issues</h3>
-      <p>Not yet monetized or demonetized? We walk you through AdSense setup, YPP requirements, and alternative income streams for creators.</p>
-      <span class="problem-tag">Revenue</span>
-    </div>
-    <div class="problem-card reveal">
-      <span class="problem-icon">🎯</span>
-      <h3>Thumbnail & CTR</h3>
-      <p>Low click-through rate is killing your reach. Learn the psychology of viral thumbnails with real examples and A/B testing strategies.</p>
-      <span class="problem-tag">Visuals</span>
-    </div>
-    <div class="problem-card reveal">
-      <span class="problem-icon">📊</span>
-      <h3>Analytics Confusion</h3>
-      <p>YouTube Studio feels overwhelming? We translate every metric into simple, actionable steps — so you know exactly what to do next.</p>
-      <span class="problem-tag">Data</span>
-    </div>
-  </div>
-</div>
-</section>
-
-<!-- PROBLEM ANALYZER -->
-<section id="analyzer">
-<div class="analyzer-section">
-  <div class="analyzer-wrap">
-    <div class="reveal" style="text-align:center;">
-      <div class="section-label" id="ana-label">AI-Powered</div>
-      <h2 class="section-title" id="ana-title">Diagnose Your Channel <span style="color:var(--red)">Instantly</span></h2>
-      <p class="section-sub" style="margin:0 auto" id="ana-sub">Describe your problem or select a category. Our system will analyze your situation and give you an exact action plan within seconds.</p>
-    </div>
-    <div class="analyzer-box reveal">
-      <h3>🧠 Channel Problem Analyzer</h3>
-      <div class="analyzer-tags">
-        <span class="atag" onclick="selectTag(this,'copyright')">⚠️ Copyright Strike</span>
-        <span class="atag" onclick="selectTag(this,'growth')">📈 Not Growing</span>
-        <span class="atag" onclick="selectTag(this,'seo')">🔍 SEO Problem</span>
-        <span class="atag" onclick="selectTag(this,'monetization')">💰 Monetization</span>
-        <span class="atag" onclick="selectTag(this,'thumbnail')">🎨 Thumbnail/CTR</span>
-        <span class="atag" onclick="selectTag(this,'analytics')">📊 Analytics</span>
-        <span class="atag" onclick="selectTag(this,'algorithm')">🤖 Algorithm</span>
-        <span class="atag" onclick="selectTag(this,'community')">💬 Community</span>
-      </div>
-      <div class="analyzer-input-wrap">
-        <input class="analyzer-input" id="analyzerInput" placeholder="Describe your YouTube problem in detail..." />
-        <button class="analyze-btn" onclick="analyzeProb()">⚡ Analyze</button>
-      </div>
-      <div class="analyzer-result" id="analyzerResult">
-        <div class="result-head" id="resultHead">🎯 DIAGNOSIS COMPLETE</div>
-        <ul class="result-steps" id="resultSteps"></ul>
-        <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.06);font-size:0.8rem;color:var(--muted)">
-          💡 <strong style="color:#FFD700">Premium users</strong> get personalized expert review + live chat support for this exact issue.
-          <button onclick="openModal()" style="background:none;border:none;color:var(--red);font-weight:700;cursor:pointer;font-size:0.8rem;text-decoration:underline;margin-left:4px;">Upgrade for ₹49 →</button>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="logo">🎬 CreatorsFix</a>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#analyzer">Analyzer</a></li>
+                <li><a href="#chat">Chat Support</a></li>
+                <li>
+                    <select class="lang-selector" id="langSelect" onchange="changeLang(this.value)">
+                        <option value="hi">हिंदी 🇮🇳</option>
+                        <option value="en">English 🇬🇧</option>
+                    </select>
+                </li>
+                <li><button class="btn-login" onclick="openLoginModal()">Login</button></li>
+            </ul>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
-</section>
+    </nav>
 
-<!-- PRICING -->
-<section id="pricing">
-<div class="pricing-section">
-  <div class="reveal">
-    <div class="section-label" id="price-label">Simple Pricing</div>
-    <h2 class="section-title" id="price-title">One Price. <span style="color:var(--red)">Lifetime Access.</span></h2>
-    <p class="section-sub" style="margin:0 auto" id="price-sub">No subscriptions. No hidden fees. Pay once, grow forever. India's most affordable creator support — guaranteed.</p>
-  </div>
-
-  <div class="pricing-cards reveal">
-    <!-- FREE -->
-    <div class="price-card">
-      <div class="plan-name" id="free-name">🆓 Free Plan</div>
-      <div class="plan-price">₹0</div>
-      <div class="plan-period" id="free-period">Forever free — limited</div>
-      <ul class="plan-features">
-        <li><span class="check">✓</span> <span id="f1">Limited AI chat (3,500 words/day)</span></li>
-        <li><span class="check">✓</span> <span id="f2">Basic problem articles</span></li>
-        <li><span class="check">✓</span> <span id="f3">Channel analyzer (basic)</span></li>
-        <li><span class="check" style="background:rgba(255,0,0,0.1);color:#666;">✗</span> <span style="color:#555" id="f4">Live Expert Chat</span></li>
-        <li><span class="check" style="background:rgba(255,0,0,0.1);color:#666;">✗</span> <span style="color:#555" id="f5">Video Tutorials</span></li>
-        <li><span class="check" style="background:rgba(255,0,0,0.1);color:#666;">✗</span> <span style="color:#555" id="f6">Priority Support</span></li>
-      </ul>
-      <button class="plan-btn free-btn" id="free-btn">Get Started Free</button>
-    </div>
-
-    <!-- PREMIUM -->
-    <div class="price-card popular">
-      <div class="popular-badge" id="pop-badge">🔥 MOST POPULAR — LIMITED OFFER</div>
-      <div class="plan-name" id="prem-name">👑 Premium Plan</div>
-      <div class="plan-og" id="prem-og">₹1,499</div>
-      <div class="plan-price gold">₹49</div>
-      <div class="plan-period" id="prem-period">One-time payment — Lifetime access</div>
-      <div class="offer-pill" id="offer-pill">🎁 97% OFF — Introductory Offer</div>
-      <ul class="plan-features">
-        <li><span class="check gold-check">✓</span> <span id="p1">Unlimited AI chat — 100% accurate answers</span></li>
-        <li><span class="check gold-check">✓</span> <span id="p2">Live expert chat support 24/7</span></li>
-        <li><span class="check gold-check">✓</span> <span id="p3">HD Video tutorials library (200+ videos)</span></li>
-        <li><span class="check gold-check">✓</span> <span id="p4">Deep channel problem analyzer</span></li>
-        <li><span class="check gold-check">✓</span> <span id="p5">Copyright strike removal guide</span></li>
-        <li><span class="check gold-check">✓</span> <span id="p6">Personalized growth blueprint</span></li>
-        <li><span class="check gold-check">✓</span> <span id="p7">Priority email & phone support</span></li>
-        <li><span class="check gold-check">✓</span> <span id="p8">Exclusive creator community access</span></li>
-        <li><span class="check gold-check">✓</span> <span id="p9">Monthly live masterclass sessions</span></li>
-      </ul>
-      <button class="plan-btn premium-btn" onclick="openModal()" id="prem-btn">⚡ Get Premium — ₹49 Only</button>
-    </div>
-  </div>
-</div>
-</section>
-
-<!-- FEATURES -->
-<section id="features">
-<div class="features-section">
-  <div class="reveal" style="text-align:center;margin-bottom:0;">
-    <div class="section-label">Platform Features</div>
-    <h2 class="section-title">Built for <span style="color:var(--red)">Creators</span> Who Refuse to Fail</h2>
-  </div>
-  <div class="features-grid reveal">
-    <div class="feature-big">
-      <span class="feature-icon-big">🤖</span>
-      <h3>CreatorFix AI Assistant</h3>
-      <p>Our proprietary AI is trained specifically on YouTube's policies, algorithm patterns, and thousands of creator case studies. Ask anything — get instant, accurate, actionable answers. Not generic advice. Real solutions.</p>
-      <div class="feature-tag-list" style="margin-top:20px;">
-        <span class="ftag">YouTube Policy Expert</span>
-        <span class="ftag">Algorithm Intel</span>
-        <span class="ftag">Instant Response</span>
-        <span class="ftag">Case-Based Learning</span>
-      </div>
-      <div style="margin-top:24px;background:rgba(255,33,33,0.06);border:1px solid rgba(255,33,33,0.15);border-radius:14px;padding:18px;">
-        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:10px;font-weight:600;">LIVE EXAMPLE</div>
-        <div style="font-size:0.85rem;color:var(--muted);margin-bottom:8px;">👤 "My video got a copyright claim on background music. What do I do?"</div>
-        <div style="font-size:0.85rem;color:var(--text);">🤖 "Go to YouTube Studio → Content → Find the video → Click 'Copyright claim' → Select 'I want to dispute this claim' → Choose 'I have a license or permission'. I'll guide you through every step..."</div>
-      </div>
-    </div>
-    <div class="feature-small">
-      <span class="feature-icon-sm">📹</span>
-      <h3>200+ Video Tutorials</h3>
-      <p>Step-by-step video guides for every YouTube challenge. From beginner to advanced — all in Hindi & English.</p>
-    </div>
-    <div class="feature-small">
-      <span class="feature-icon-sm">👨‍💼</span>
-      <h3>Live Expert Chat</h3>
-      <p>Talk to real YouTube growth experts. Not bots. Get personalized advice for your specific channel situation.</p>
-    </div>
-    <div class="feature-small" style="grid-column:1/3;">
-      <span class="feature-icon-sm">🏆</span>
-      <h3>Creator Success Dashboard</h3>
-      <p>Track your channel's progress, solved problems, and growth milestones. See exactly how much CreatorFix has helped your channel with before/after analytics.</p>
-    </div>
-  </div>
-</div>
-</section>
-
-<!-- TESTIMONIALS -->
-<div class="testimonials">
-  <div class="testimonials-header reveal">
-    <div class="section-label">Creator Stories</div>
-    <h2 class="section-title">Real Results. <span style="color:var(--red)">Real Creators.</span></h2>
-  </div>
-  <div class="testimonials-track">
-    <div class="tcard"><div class="tcard-header"><div class="tcard-avatar">R</div><div><div class="tcard-name">Rahul Verma</div><div class="tcard-subs">45K Subscribers</div></div></div><div class="stars">★★★★★</div><p>"Got 3 copyright strikes removed in one day following CreatorFix's guide. Literally saved my channel. Worth every rupee of ₹49!"</p></div>
-    <div class="tcard"><div class="tcard-header"><div class="tcard-avatar">P</div><div><div class="tcard-name">Priya Nair</div><div class="tcard-subs">12K Subscribers</div></div></div><div class="stars">★★★★★</div><p>"My SEO was broken for 8 months. The analyzer found the exact problem in 30 seconds. Now my videos rank on page 1!"</p></div>
-    <div class="tcard"><div class="tcard-header"><div class="tcard-avatar">A</div><div><div class="tcard-name">Arjun Singh</div><div class="tcard-subs">2.1L Subscribers</div></div></div><div class="stars">★★★★★</div><p>"The live expert chat is insane. I asked about monetization and got a full roadmap in minutes. Grew from 50K to 2L in 4 months!"</p></div>
-    <div class="tcard"><div class="tcard-header"><div class="tcard-avatar">S</div><div><div class="tcard-name">Sneha Desai</div><div class="tcard-subs">8K Subscribers</div></div></div><div class="stars">★★★★★</div><p>"As a new creator, CreatorFix felt like having a YouTube mentor available 24/7. The video tutorials are gold!"</p></div>
-    <div class="tcard"><div class="tcard-header"><div class="tcard-avatar">K</div><div><div class="tcard-name">Karthik Rajan</div><div class="tcard-subs">78K Subscribers</div></div></div><div class="stars">★★★★★</div><p>"Channel was stuck at 20K for a year. Used the growth blueprint and hit 78K in 5 months. Best ₹49 I ever spent!"</p></div>
-    <div class="tcard"><div class="tcard-header"><div class="tcard-avatar">M</div><div><div class="tcard-name">Meena Sharma</div><div class="tcard-subs">33K Subscribers</div></div></div><div class="stars">★★★★★</div><p>"Hindi mein sab kuch explain karta hai. Mujhe English ki tension nahi leni padi. Perfect platform for Indian creators!"</p></div>
-    <!-- Duplicate for loop -->
-    <div class="tcard"><div class="tcard-header"><div class="tcard-avatar">R</div><div><div class="tcard-name">Rahul Verma</div><div class="tcard-subs">45K Subscribers</div></div></div><div class="stars">★★★★★</div><p>"Got 3 copyright strikes removed in one day following CreatorFix's guide. Literally saved my channel. Worth every rupee of ₹49!"</p></div>
-    <div class="tcard"><div class="tcard-header"><div class="tcard-avatar">P</div><div><div class="tcard-name">Priya Nair</div><div class="tcard-subs">12K Subscribers</div></div></div><div class="stars">★★★★★</div><p>"My SEO was broken for 8 months. The analyzer found the exact problem in 30 seconds. Now my videos rank on page 1!"</p></div>
-    <div class="tcard"><div class="tcard-header"><div class="tcard-avatar">A</div><div><div class="tcard-name">Arjun Singh</div><div class="tcard-subs">2.1L Subscribers</div></div></div><div class="stars">★★★★★</div><p>"The live expert chat is insane. I asked about monetization and got a full roadmap in minutes. Grew from 50K to 2L in 4 months!"</p></div>
-    <div class="tcard"><div class="tcard-header"><div class="tcard-avatar">S</div><div><div class="tcard-name">Sneha Desai</div><div class="tcard-subs">8K Subscribers</div></div></div><div class="stars">★★★★★</div><p>"As a new creator, CreatorFix felt like having a YouTube mentor available 24/7. The video tutorials are gold!"</p></div>
-  </div>
-</div>
-
-<!-- LANGUAGES -->
-<div class="langs-section reveal">
-  <div class="section-label">Multilingual Platform</div>
-  <h2 class="section-title" style="font-size:1.8rem;">Available in All Major <span style="color:var(--red)">Indian Languages</span></h2>
-  <div class="langs-grid">
-    <span class="lang-pill">🇮🇳 हिंदी</span><span class="lang-pill">தமிழ்</span>
-    <span class="lang-pill">తెలుగు</span><span class="lang-pill">বাংলা</span>
-    <span class="lang-pill">मराठी</span><span class="lang-pill">ગુજરાતી</span>
-    <span class="lang-pill">ಕನ್ನಡ</span><span class="lang-pill">മലയാളം</span>
-    <span class="lang-pill">ਪੰਜਾਬੀ</span><span class="lang-pill">اردو</span>
-    <span class="lang-pill">ଓଡ଼ିଆ</span><span class="lang-pill">অসমীয়া</span>
-    <span class="lang-pill">🌐 English</span>
-  </div>
-</div>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-logo">CreatorFix</div>
-  <div class="footer-tagline">India's Premier YouTube Creator Support Platform</div>
-  <div class="footer-links">
-    <a href="#">Privacy Policy</a>
-    <a href="#">Terms of Service</a>
-    <a href="#">Refund Policy</a>
-    <a href="#">Contact Us</a>
-    <a href="#">About</a>
-  </div>
-  <div class="footer-copy">© 2025 CreatorFix. All rights reserved. Made with ❤️ for Indian Creators.</div>
-</footer>
-
-<!-- CHAT WIDGET -->
-<div class="chat-widget">
-  <div class="chat-box" id="chatBox">
-    <div class="chat-header">
-      <div class="avatar">🤖</div>
-      <div class="chat-header-info">
-        <h4>CreatorFix AI</h4>
-        <p>Always online — Instant answers</p>
-      </div>
-    </div>
-    <div class="chat-messages" id="chatMessages">
-      <div class="msg bot">👋 Hey Creator! I'm the CreatorFix AI. What YouTube problem can I help you solve today?</div>
-    </div>
-    <div class="chat-lock" id="chatLock">🔒 <strong>Free:</strong> 3 messages left today. <a href="#" onclick="openModal();return false;" style="color:#FFD700;font-weight:700;">Upgrade to Unlimited →</a></div>
-    <div class="chat-input-wrap">
-      <input class="chat-input" id="chatInput" placeholder="Ask any YouTube question..." onkeydown="if(event.key==='Enter')sendChat()" />
-      <button class="chat-send" onclick="sendChat()">➤</button>
-    </div>
-  </div>
-  <button class="chat-btn" onclick="toggleChat()" title="CreatorFix AI">🤖</button>
-</div>
-
-<!-- LOGIN MODAL -->
-<div class="login-overlay" id="loginOverlay">
-  <div class="login-modal">
-    <div class="login-top-bar"></div>
-    <button class="login-close" onclick="closeLoginModal()">✕</button>
-    <div class="login-body">
-      <!-- TABS -->
-      <div class="login-tabs">
-        <button class="login-tab active" id="tabLogin" onclick="switchTab('login')">Sign In</button>
-        <button class="login-tab" id="tabSignup" onclick="switchTab('signup')">Create Account</button>
-      </div>
-
-      <!-- ===== LOGIN PANEL ===== -->
-      <div id="panelLogin">
-        <div class="login-header">
-          <span class="lh-icon">🎬</span>
-          <h2>Welcome Back, Creator</h2>
-          <p>Sign in to access your CreatorFix dashboard</p>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 id="heroTitle">CreatorsFix - आपकी YouTube Growth का Partner</h1>
+            <p id="heroSubtitle">AI-powered analytics और strategies के साथ अपने channel को grow करें</p>
+            <button class="cta-btn" onclick="openModal()">Get Started - FREE Demo</button>
         </div>
+    </section>
 
-        <!-- GOOGLE -->
-        <button class="google-btn" onclick="googleLogin()">
-          <svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.6 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.2 6.4 29.4 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 20-9 20-20 0-1.3-.1-2.7-.4-3.9z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 16 19 13 24 13c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.2 6.4 29.4 4 24 4 16.3 4 9.6 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.3 35.5 26.8 36 24 36c-5.2 0-9.6-3.3-11.3-8H6.1C9.3 36.2 16.1 44 24 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.9 2.5-2.5 4.7-4.7 6.2l6.2 5.2C37.9 37.9 44 33 44 24c0-1.3-.1-2.7-.4-3.9z"/></svg>
-          Continue with Google
-        </button>
-
-        <div class="divider"><span>or sign in with email</span></div>
-
-        <div class="login-field">
-          <label>Email Address</label>
-          <div class="login-input-wrap">
-            <input class="login-input" id="loginEmail" type="email" placeholder="you@example.com" />
-            <span class="input-icon">✉️</span>
-          </div>
-        </div>
-
-        <div class="login-field">
-          <label>Password</label>
-          <div class="login-input-wrap">
-            <input class="login-input" id="loginPassword" type="password" placeholder="Enter your password" />
-            <button class="eye-toggle" onclick="togglePw('loginPassword',this)" tabindex="-1">👁️</button>
-          </div>
-        </div>
-
-        <div class="login-extras">
-          <label class="remember-wrap">
-            <input type="checkbox" id="rememberMe"> <span>Remember me</span>
-          </label>
-          <a class="forgot-link" href="#" onclick="showForgot();return false;">Forgot Password?</a>
-        </div>
-
-        <button class="login-submit" onclick="doLogin()">Sign In to CreatorFix</button>
-
-        <p class="login-footer-txt">Don't have an account? <a onclick="switchTab('signup')">Create one free →</a></p>
-      </div>
-
-      <!-- ===== SIGNUP PANEL ===== -->
-      <div id="panelSignup" style="display:none;">
-        <div class="login-header">
-          <span class="lh-icon">🚀</span>
-          <h2>Join CreatorFix</h2>
-          <p>Create your free account and start fixing your YouTube today</p>
-        </div>
-
-        <!-- GOOGLE -->
-        <button class="google-btn" onclick="googleLogin()">
-          <svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.6 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.2 6.4 29.4 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 20-9 20-20 0-1.3-.1-2.7-.4-3.9z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 16 19 13 24 13c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.2 6.4 29.4 4 24 4 16.3 4 9.6 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.3 35.5 26.8 36 24 36c-5.2 0-9.6-3.3-11.3-8H6.1C9.3 36.2 16.1 44 24 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.9 2.5-2.5 4.7-4.7 6.2l6.2 5.2C37.9 37.9 44 33 44 24c0-1.3-.1-2.7-.4-3.9z"/></svg>
-          Sign up with Google
-        </button>
-
-        <div class="divider"><span>or sign up with email</span></div>
-
-        <div class="signup-name-row">
-          <div class="login-field" style="margin-bottom:0;">
-            <label>First Name</label>
-            <div class="login-input-wrap">
-              <input class="login-input" id="signupFirst" type="text" placeholder="Rahul" />
+    <!-- Stats Section -->
+    <section class="stats">
+        <h2 style="text-align: center; color: var(--secondary); margin-bottom: 2rem;">हमारे Success Metrics</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" data-target="5000">0</div>
+                <div class="stat-label">Creators Helped</div>
             </div>
-          </div>
-          <div class="login-field" style="margin-bottom:0;">
-            <label>Last Name</label>
-            <div class="login-input-wrap">
-              <input class="login-input" id="signupLast" type="text" placeholder="Verma" />
+            <div class="stat-card">
+                <div class="stat-number" data-target="25000000">0</div>
+                <div class="stat-label">Total Views Generated</div>
             </div>
-          </div>
+            <div class="stat-card">
+                <div class="stat-number" data-target="500000">0</div>
+                <div class="stat-label">Subscribers Added</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" data-target="95">0</div>
+                <div class="stat-label">Client Satisfaction %</div>
+            </div>
         </div>
+    </section>
 
-        <div class="login-field" style="margin-top:16px;">
-          <label>Email Address</label>
-          <div class="login-input-wrap">
-            <input class="login-input" id="signupEmail" type="email" placeholder="you@example.com" />
-            <span class="input-icon">✉️</span>
-          </div>
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <h2>🚀 हमा���ी Services</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Advanced Analytics</h3>
+                <p>Real-time data और detailed insights जो आपके channel performance को explain करें</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3>AI Recommendations</h3>
+                <p>Machine Learning से optimized suggestions - title, tags, thumbnail, posting time</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💡</div>
+                <h3>Problem Identifier</h3>
+                <p>Exact problems identify करें जो आपके growth को रोक रहे हैं</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Growth Strategy</h3>
+                <p>Customized roadmap - कैसे 1K से 1M subscribers तक पहुंचें</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3>Competitor Analysis</h3>
+                <p>अपने competitors को analyze करें और उनसे ahead रहें</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <h3>24/7 AI Support</h3>
+                <p>Anytime help - हर सवाल का जवाब तुरंत मिलेगा</p>
+            </div>
         </div>
+    </section>
 
-        <div class="login-field">
-          <label>Password</label>
-          <div class="login-input-wrap">
-            <input class="login-input" id="signupPassword" type="password" placeholder="Create a strong password" oninput="checkStrength(this.value)" />
-            <button class="eye-toggle" onclick="togglePw('signupPassword',this)" tabindex="-1">👁️</button>
-          </div>
-          <div class="pw-strength">
-            <div class="pw-strength-bar"><div class="pw-strength-fill" id="strengthFill"></div></div>
-            <div class="pw-strength-text" id="strengthText"></div>
-          </div>
+    <!-- Problem Analyzer -->
+    <section class="analyzer" id="analyzer">
+        <h2>🔍 अपनी Problem को Identify करें</h2>
+        <p style="text-align: center; margin-bottom: 2rem;">अपनी problem select करें और exact solution पाएं</p>
+        
+        <div class="analyzer-tags">
+            <button class="tag-btn" onclick="selectTag('views')">📉 Views नहीं आ रहे</button>
+            <button class="tag-btn" onclick="selectTag('subscribers')">👥 Subscribers Slow हैं</button>
+            <button class="tag-btn" onclick="selectTag('viral')">🔥 Videos Viral नहीं हो रहे</button>
+            <button class="tag-btn" onclick="selectTag('engagement')">💬 Engagement कम है</button>
+            <button class="tag-btn" onclick="selectTag('monetization')">💰 Monetization Help</button>
+            <button class="tag-btn" onclick="selectTag('content')">🎬 Content Strategy</button>
         </div>
-
-        <div class="login-field">
-          <label>YouTube Channel Link <span style="color:var(--muted);font-weight:400;text-transform:none;">(optional)</span></label>
-          <div class="login-input-wrap">
-            <input class="login-input" id="signupChannel" type="url" placeholder="https://youtube.com/@yourchannel" />
-            <span class="input-icon">▶️</span>
-          </div>
+        
+        <div class="analyzer-result">
+            <div class="result-title" id="resultTitle"></div>
+            <div id="resultContent"></div>
+            <button class="cta-btn" onclick="openModal()" style="margin-top: 1.5rem; width: 100%;">Get Professional Help</button>
         </div>
+    </section>
 
-        <button class="login-submit" onclick="doSignup()">Create Free Account</button>
-
-        <p class="login-footer-txt" style="font-size:0.74rem;color:rgba(255,255,255,0.25);margin-top:12px;">By signing up you agree to our <a href="#" style="color:rgba(255,255,255,0.35);">Terms of Service</a> & <a href="#" style="color:rgba(255,255,255,0.35);">Privacy Policy</a></p>
-        <p class="login-footer-txt">Already have an account? <a onclick="switchTab('login')">Sign in →</a></p>
-      </div>
-
-      <!-- ===== FORGOT PASSWORD PANEL ===== -->
-      <div id="panelForgot" style="display:none;">
-        <div class="login-header">
-          <span class="lh-icon">🔑</span>
-          <h2>Reset Password</h2>
-          <p>Enter your email and we'll send you a reset link instantly</p>
+    <!-- Chat Support Section -->
+    <section class="chat-section" id="chat">
+        <div class="chat-header" onclick="toggleChat()">
+            <h3>💬 Live AI Support</h3>
+            <button class="chat-toggle">Toggle Chat</button>
         </div>
-        <div class="login-field">
-          <label>Email Address</label>
-          <div class="login-input-wrap">
-            <input class="login-input" id="forgotEmail" type="email" placeholder="you@example.com" />
-            <span class="input-icon">✉️</span>
-          </div>
+        
+        <div class="chat-box">
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot">
+                    <strong>AI Support:</strong> नमस्ते! 👋 मैं CreatorsFix का AI assistant हूँ। आपकी YouTube growth में कैसे मदद कर सकता हूँ?
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" class="chat-input" id="chatInput" placeholder="अपना सवाल लिखें...">
+                <button class="chat-send" onclick="sendChat()">Send</button>
+            </div>
         </div>
-        <button class="login-submit" onclick="doForgot()">Send Reset Link</button>
-        <p class="login-footer-txt"><a onclick="switchTab('login')">← Back to Sign In</a></p>
-      </div>
+    </section>
 
-      <!-- SUCCESS -->
-      <div id="panelSuccess" style="display:none;">
-        <div class="login-success">
-          <span class="success-icon">🎉</span>
-          <h3 id="successTitle">Welcome to CreatorFix!</h3>
-          <p id="successMsg">You're now signed in. Your YouTube journey starts here.</p>
-          <button onclick="closeLoginModal()" style="margin-top:24px;background:linear-gradient(135deg,var(--red),#c00);border:none;color:white;padding:13px 32px;border-radius:12px;font-family:var(--font-body);font-size:0.95rem;font-weight:700;cursor:pointer;width:100%;transition:all 0.3s;">
-            🚀 Go to Dashboard
-          </button>
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Login / SignUp</h2>
+                <button class="close-btn" onclick="closeLoginModal()">&times;</button>
+            </div>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" required placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" required placeholder="Password">
+                </div>
+                <button type="submit" class="cta-btn" style="width: 100%;">Login</button>
+                <p style="text-align: center; margin-top: 1rem;">
+                    Google से login करें: <button type="button" class="btn-login" onclick="loginWithGoogle()">Google</button>
+                </p>
+            </form>
         </div>
-      </div>
-
     </div>
-  </div>
-</div>
 
-<!-- PAYMENT MODAL -->
-<div class="modal-overlay" id="payModal">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div id="payContent">
-      <div class="section-label">Secure Payment</div>
-      <h3>Unlock CreatorFix Premium</h3>
-      <p class="modal-sub">One-time payment. Lifetime access. No recurring charges. Ever.</p>
-      <div class="modal-price">
-        <span class="modal-og">₹1,499</span>
-        <span class="modal-final">₹49</span>
-        <span class="modal-final-label">one-time<br>lifetime</span>
-      </div>
-      <div class="upi-box">
-        <div class="upi-qr"><img src="data:image/png;base64,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" alt="PhonePe QR Code" style="width:140px;height:140px;border-radius:12px;object-fit:contain;" /></div>
-        <div>Scan QR or pay to UPI ID:</div>
-        <div class="upi-id">9396797971-5@ibl</div>
-        <div class="upi-note">Pay exactly ₹49 — Enter your channel name as remark</div>
-      </div>
-      <button class="modal-confirm-btn" onclick="confirmPayment()">✅ I've Made the Payment — Activate My Account</button>
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Choose Your Plan</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <div style="margin: 2rem 0;">
+                <div style="background: #f0f0f0; padding: 1.5rem; border-radius: 10px; margin-bottom: 1rem;">
+                    <h3>🆓 Free Trial</h3>
+                    <p style="font-size: 2rem; color: var(--primary); font-weight: bold;">₹0</p>
+                    <p>7 days unlimited access</p>
+                    <button class="cta-btn" style="width: 100%; margin-top: 1rem;" onclick="startFreeTrial()">Start Free Trial</button>
+                </div>
+                
+                <div style="background: var(--primary); color: white; padding: 1.5rem; border-radius: 10px; margin-bottom: 1rem;">
+                    <h3>⭐ Premium</h3>
+                    <p style="font-size: 2rem; font-weight: bold;">₹499/month</p>
+                    <p>Full analytics + AI recommendations</p>
+                    <button class="cta-btn" style="width: 100%; margin-top: 1rem; background: white; color: var(--primary);" onclick="openUPIPayment()">Buy Premium</button>
+                </div>
+                
+                <div style="background: var(--secondary); color: white; padding: 1.5rem; border-radius: 10px;">
+                    <h3>👑 Professional</h3>
+                    <p style="font-size: 2rem; font-weight: bold;">₹1999/month</p>
+                    <p>All Premium + Personal Manager</p>
+                    <button class="cta-btn" style="width: 100%; margin-top: 1rem;" onclick="contactSales()">Contact Us</button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 
-<script>
-// CURSOR
-const cursor = document.getElementById('cursor');
-const cursorRing = document.getElementById('cursorRing');
-let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
-document.addEventListener('mousemove', e => {
-  mouseX = e.clientX; mouseY = e.clientY;
-  cursor.style.left = mouseX - 6 + 'px';
-  cursor.style.top = mouseY - 6 + 'px';
-});
-function animateRing() {
-  ringX += (mouseX - ringX) * 0.12;
-  ringY += (mouseY - ringY) * 0.12;
-  cursorRing.style.left = ringX - 18 + 'px';
-  cursorRing.style.top = ringY - 18 + 'px';
-  requestAnimationFrame(animateRing);
-}
-animateRing();
-document.querySelectorAll('button, a, .atag, .problem-card, .tcard').forEach(el => {
-  el.addEventListener('mouseenter', () => { cursor.style.transform = 'scale(2)'; cursorRing.style.transform = 'scale(1.5)'; });
-  el.addEventListener('mouseleave', () => { cursor.style.transform = 'scale(1)'; cursorRing.style.transform = 'scale(1)'; });
-});
+    <!-- UPI Payment Modal -->
+    <div id="upiModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>UPI Payment</h2>
+                <button class="close-btn" onclick="closeUPIModal()">&times;</button>
+            </div>
+            
+            <div style="text-align: center;">
+                <p style="margin-bottom: 1rem; font-weight: bold;">₹499 को भुगतान करने के लिए UPI से scan करें:</p>
+                
+                <div class="qr-code">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='white' width='200' height='200'/%3E%3Crect fill='%23FF6B35' x='10' y='10' width='20' height='20'/%3E%3Crect fill='%23FF6B35' x='170' y='10' width='20' height='20'/%3E%3Crect fill='%23FF6B35' x='10' y='170' width='20' height='20'/%3E%3C/svg%3E" alt="UPI QR Code">
+                </div>
+                
+                <p style="color: var(--secondary); font-weight: bold;">OR</p>
+                
+                <p style="margin: 1rem 0;">UPI ID में भुगतान करें:</p>
+                <div style="background: #f0f0f0; padding: 1rem; border-radius: 5px; word-break: break-all; font-family: monospace;">
+                    creatorsfix@upi
+                </div>
+                
+                <button class="cta-btn" style="width: 100%; margin-top: 2rem;" onclick="verifyPayment()">Payment करा दिया ✓</button>
+            </div>
+        </div>
+    </div>
 
-// PARTICLES
-const canvas = document.getElementById('particles-canvas');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
-const particles = [];
-for (let i = 0; i < 80; i++) {
-  particles.push({
-    x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-    r: Math.random() * 1.5 + 0.3,
-    dx: (Math.random() - 0.5) * 0.4, dy: (Math.random() - 0.5) * 0.4,
-    alpha: Math.random() * 0.5 + 0.1,
-    color: Math.random() > 0.7 ? '#FFD700' : '#FF2121'
-  });
-}
-function drawParticles() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  particles.forEach(p => {
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-    ctx.fillStyle = p.color;
-    ctx.globalAlpha = p.alpha;
-    ctx.fill();
-    p.x += p.dx; p.y += p.dy;
-    if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
-    if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
-  });
-  // Draw connections
-  particles.forEach((p1, i) => {
-    particles.slice(i+1).forEach(p2 => {
-      const d = Math.hypot(p1.x - p2.x, p1.y - p2.y);
-      if (d < 100) {
-        ctx.beginPath();
-        ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
-        ctx.strokeStyle = '#FF2121';
-        ctx.globalAlpha = (1 - d/100) * 0.08;
-        ctx.lineWidth = 0.5;
-        ctx.stroke();
-      }
-    });
-  });
-  ctx.globalAlpha = 1;
-  requestAnimationFrame(drawParticles);
-}
-drawParticles();
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <h3>CreatorsFix</h3>
+            <p style="margin: 1rem 0;">AI-powered YouTube growth platform</p>
+            <div class="footer-links">
+                <a href="#privacy">Privacy Policy</a>
+                <a href="#terms">Terms of Service</a>
+                <a href="#contact">Contact Us</a>
+                <a href="#blog">Blog</a>
+            </div>
+            <p>&copy; 2026 CreatorsFix. All rights reserved. | Made with ❤️ for Creators</p>
+            <p style="margin-top: 1rem; font-size: 0.9rem;">Email: support@creatorsfixx.com | Phone: +91-XXXXXXXXXX</p>
+        </div>
+    </footer>
 
-// COUNTER ANIMATION
-function animateCounter(el, target, suffix, duration) {
-  let start = 0;
-  const step = target / (duration / 16);
-  const timer = setInterval(() => {
-    start = Math.min(start + step, target);
-    el.textContent = Math.floor(start).toLocaleString('en-IN') + suffix;
-    if (start >= target) clearInterval(timer);
-  }, 16);
-}
-setTimeout(() => {
-  animateCounter(document.getElementById('c1'), 24700, '+', 2000);
-  animateCounter(document.getElementById('c2'), 89300, '+', 2000);
-  animateCounter(document.getElementById('c3'), 48, '', 1500);
-  document.getElementById('c4').textContent = '98%';
-}, 600);
-
-// SCROLL REVEAL
-const reveals = document.querySelectorAll('.reveal, .problem-card');
-const observer = new IntersectionObserver(entries => {
-  entries.forEach((entry, i) => {
-    if (entry.isIntersecting) {
-      setTimeout(() => entry.target.classList.add('visible'), 0);
-      observer.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.12 });
-reveals.forEach(r => observer.observe(r));
-
-// PROBLEM CARDS stagger
-const problemCards = document.querySelectorAll('.problem-card');
-const cardObserver = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      const cards = entry.target.parentElement.querySelectorAll('.problem-card');
-      cards.forEach((c, i) => setTimeout(() => c.classList.add('visible'), i * 120));
-      cardObserver.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.1 });
-if (problemCards.length) cardObserver.observe(problemCards[0]);
-
-// ANALYZER
-let selectedTag = '';
-function selectTag(el, val) {
-  document.querySelectorAll('.atag').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  selectedTag = val;
-  document.getElementById('analyzerInput').value = el.textContent.trim().replace(/^[^\w]+/,'');
-}
-
-const solutions = {
-  copyright: ["Go to YouTube Studio → Content → Find the affected video","Click 'See details' next to the copyright claim","Choose 'Dispute claim' if you believe it's a false claim","Select 'I have a license' or 'It's my original content'","Submit with supporting evidence — response comes in 30 days","Meanwhile, avoid deleting the video (you'll lose dispute rights)","Get our full Copyright Guide in Premium for faster resolution"],
-  growth: ["Audit your last 10 videos — find which had best CTR and retention","Focus your next 5 videos on ONLY that topic/style","Post consistently: minimum 2 videos per week for 90 days","Use the first 30 seconds to hook viewers — no intros","Add chapters to increase average view duration by 40%","Respond to EVERY comment in first 2 hours of upload","Collaborate with 3 creators in same niche this month"],
-  seo: ["Research keywords using YouTube Search autocomplete first","Put your primary keyword in Title, Description line 1, and first 3 tags","Your title must be 60-70 characters, front-load the keyword","Write 300+ word descriptions with keyword used 3-4 times naturally","Add 5-8 highly relevant tags (no keyword stuffing)","Use closed captions — YouTube indexes your transcript","Check competitors' tags using free tools like TubeBuddy"],
-  monetization: ["Ensure 1,000 subscribers AND 4,000 watch hours in last 12 months","Check Community Guidelines strikes — even 1 can block YPP","Apply via YouTube Studio → Earn → Apply Now","Review takes 1 month — if rejected, appeal after 30 days","Start with AdSense + memberships + super chat for income","Consider Patreon, merchandise, and affiliate marketing now","Premium members get a personalized monetization checklist"],
-  thumbnail: ["Use faces with extreme emotions — curiosity, surprise, or shock","Limit text to 3-5 words maximum, use large bold fonts","Use contrasting colors — red/yellow on dark background works best","Test 3 thumbnail variations using YouTube's A/B testing","Your thumbnail + title must create a 'curiosity gap'","Look at top 5 videos in your niche — reverse engineer their style","Aim for CTR above 6% — below 3% means thumbnail needs fixing"],
-  analytics: ["First check: Audience Retention — any dip below 40% is critical","Click-Through Rate (CTR) under 3% = thumbnail problem","Average View Duration under 30% = content pacing problem","Impressions dropping = thumbnail or SEO issue","Check 'Traffic Sources' — search traffic should be 40%+","Best time to post: Check 'When your viewers are on YouTube'","Revenue per mille (RPM) dropping = audience quality issue"],
-  algorithm: ["Algorithm rewards Watch Time over views — focus on retention","Publish consistently — irregular posting resets algorithm favor","First 48 hours are critical — share everywhere immediately","Use all YouTube features: Shorts, Community posts, Live — algorithm boosts multi-format creators","Series content outperforms one-off videos by 3x","Add end screens and cards to increase session time","Respond to comments quickly — engagement signals algorithm to push video"]
-};
-
-function analyzeProb() {
-  const input = document.getElementById('analyzerInput').value.trim();
-  const key = selectedTag || detectProblem(input);
-  const steps = solutions[key] || ["Describe your problem more specifically — select a category above","Our AI works best with detailed problem descriptions","Or upgrade to Premium for personalized expert diagnosis"];
-  const heads = { copyright:'🚨 COPYRIGHT STRIKE SOLUTION PLAN', growth:'📈 CHANNEL GROWTH ACTION PLAN', seo:'🔍 SEO FIX ROADMAP', monetization:'💰 MONETIZATION STRATEGY', thumbnail:'🎨 CTR & THUMBNAIL FIX', analytics:'📊 ANALYTICS DIAGNOSIS', algorithm:'🤖 ALGORITHM STRATEGY', default:'🎯 DIAGNOSIS COMPLETE' };
-  document.getElementById('resultHead').textContent = heads[key] || heads.default;
-  document.getElementById('resultSteps').innerHTML = steps.map(s => `<li>${s}</li>`).join('');
-  const result = document.getElementById('analyzerResult');
-  result.classList.add('show');
-  result.scrollIntoView({ behavior:'smooth', block:'nearest' });
-}
-
-function detectProblem(text) {
-  text = text.toLowerCase();
-  if (text.includes('copyright') || text.includes('strike') || text.includes('claim')) return 'copyright';
-  if (text.includes('grow') || text.includes('subscriber') || text.includes('view')) return 'growth';
-  if (text.includes('seo') || text.includes('search') || text.includes('rank') || text.includes('keyword')) return 'seo';
-  if (text.includes('monetiz') || text.includes('adsense') || text.includes('money') || text.includes('earn')) return 'monetization';
-  if (text.includes('thumbnail') || text.includes('ctr') || text.includes('click')) return 'thumbnail';
-  if (text.includes('analytics') || text.includes('data') || text.includes('studio')) return 'analytics';
-  if (text.includes('algorithm') || text.includes('recommend') || text.includes('viral')) return 'algorithm';
-  return 'growth';
-}
-
-// CHAT
-let chatCount = 0;
-const maxFree = 3;
-const botResponses = {
-  copyright: "For copyright strikes: Go to YouTube Studio → Content → find the video → click 'Copyright claim' → Dispute it. I'll guide you step by step. 🔴",
-  grow: "To grow your channel: Focus on 1 niche, upload 2x/week, optimize your first 30 seconds, and nail your thumbnail. Want a full growth plan?",
-  seo: "For better SEO: Put your keyword in Title (first), Description (first line), and first 3 tags. Aim for 60-char titles. Need a keyword research guide?",
-  money: "For monetization you need 1,000 subs + 4,000 watch hours. Apply via YouTube Studio → Earn. Want the full checklist?",
-  default: "Great question! In Premium I can give you a full personalized answer. But here's the short version: focus on your viewer retention first — everything flows from there. 🎯"
-};
-function toggleChat() {
-  const box = document.getElementById('chatBox');
-  box.classList.toggle('open');
-}
-function sendChat() {
-  if (chatCount >= maxFree) {
-    document.getElementById('chatLock').innerHTML = '🔒 <strong>Free limit reached.</strong> <a href="#" onclick="openModal();return false;" style="color:#FFD700;font-weight:700;">Upgrade for Unlimited — ₹49 →</a>';
-    return;
-  }
-  const input = document.getElementById('chatInput');
-  const msg = input.value.trim();
-  if (!msg) return;
-  const msgs = document.getElementById('chatMessages');
-  msgs.innerHTML += `<div class="msg user">${msg}</div>`;
-  input.value = '';
-  chatCount++;
-  document.getElementById('chatLock').innerHTML = `🔒 <strong>Free:</strong> ${maxFree - chatCount} messages left. <a href="#" onclick="openModal();return false;" style="color:#FFD700;font-weight:700;">Upgrade →</a>`;
-  const lower = msg.toLowerCase();
-  let reply = botResponses.default;
-  if (lower.includes('copyright') || lower.includes('strike')) reply = botResponses.copyright;
-  else if (lower.includes('grow') || lower.includes('subscriber')) reply = botResponses.grow;
-  else if (lower.includes('seo') || lower.includes('rank')) reply = botResponses.seo;
-  else if (lower.includes('money') || lower.includes('monetiz')) reply = botResponses.money;
-  setTimeout(() => {
-    msgs.innerHTML += `<div class="msg bot">🤖 ${reply}</div>`;
-    msgs.scrollTop = msgs.scrollHeight;
-  }, 600);
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-// MODAL
-function openModal() { document.getElementById('payModal').classList.add('open'); document.body.style.overflow = 'hidden'; }
-function closeModal() { document.getElementById('payModal').classList.remove('open'); document.body.style.overflow = ''; }
-document.getElementById('payModal').addEventListener('click', e => { if(e.target === e.currentTarget) closeModal(); });
-function confirmPayment() {
-  document.getElementById('payContent').innerHTML = `
-    <div class="success-screen">
-      <span class="check-big">🎉</span>
-      <h3>Welcome to Premium!</h3>
-      <p style="margin-bottom:16px;">Your payment is being verified. You'll receive access confirmation within 1 hour on your registered email.</p>
-      <p style="font-size:0.82rem;color:var(--muted);">Screenshot your payment and send it to <strong style="color:#FFD700;">creatorfix@gmail.com</strong> with your channel link for instant activation.</p>
-      <button onclick="closeModal()" style="margin-top:24px;background:linear-gradient(135deg,var(--red),#c00);border:none;color:white;padding:12px 28px;border-radius:12px;font-family:var(--font-body);font-size:0.9rem;font-weight:700;cursor:pointer;width:100%;">Close & Start Using CreatorFix</button>
-    </div>`;
-}
-
-// LANGUAGE SYSTEM
-const translations = {
-  en: { 'badge-text':'🔴 LIVE — India\'s #1 YouTube Creator Support Platform', 'hero-line1':'Stop Struggling.', 'hero-line2':'Start Creating.', 'hero-sub':'Every YouTube problem solved in one place. Expert guidance, AI-powered analysis, and real results.', 'hero-cta1':'🚀 Get Premium — Only ₹49', 'hero-cta2':'🔍 Analyze My Problem', 's1':'Creators Helped','s2':'Problems Solved','s3':'Expert Advisors','s4':'Success Rate', 'prob-label':'Problems We Solve', 'prob-title':'Every YouTube Pain Point — Eliminated.', 'price-label':'Simple Pricing', 'price-title':'One Price. Lifetime Access.' },
-  hi: { 'badge-text':'🔴 LIVE — भारत का #1 YouTube Creator Support Platform', 'hero-line1':'संघर्ष बंद करो।', 'hero-line2':'बनाना शुरू करो।', 'hero-sub':'हर YouTube समस्या एक जगह सुलझाएं। Expert guidance, AI विश्लेषण, और असली नतीजे।', 'hero-cta1':'🚀 Premium लें — सिर्फ ₹49', 'hero-cta2':'🔍 मेरी समस्या Analyze करें', 's1':'Creators की मदद','s2':'समस्याएं हल','s3':'Expert Advisors','s4':'Success Rate', 'prob-label':'हम क्या Solve करते हैं', 'prob-title':'हर YouTube समस्या — खत्म।', 'price-label':'Simple Pricing', 'price-title':'एक बार भुगतान। जीवन भर Access।' },
-  ta: { 'hero-line1':'போராட்டம் நிறுத்துங்கள்.', 'hero-line2':'படைக்கத் தொடங்குங்கள்.', 'hero-sub':'YouTube பிரச்சனைகள் அனைத்தும் ஒரே இடத்தில் தீர்க்கப்படும்.', 'hero-cta1':'🚀 Premium பெறுங்கள் — ₹49 மட்டும்', 'hero-cta2':'🔍 என் பிரச்சனையை Analyze செய்யுங்கள்' },
-  te: { 'hero-line1':'పోరాటం ఆపండి.', 'hero-line2':'సృష్టించడం ప్రారంభించండి.', 'hero-sub':'YouTube సమస్యలన్నీ ఒకే చోట పరిష్కరించబడతాయి.', 'hero-cta1':'🚀 Premium పొందండి — ₹49 మాత్రమే' },
-  bn: { 'hero-line1':'সংগ্রাম বন্ধ করুন।', 'hero-line2':'তৈরি করা শুরু করুন।', 'hero-sub':'YouTube-এর সব সমস্যা এক জায়গায় সমাধান হয়।', 'hero-cta1':'🚀 Premium নিন — মাত্র ₹49' },
-  mr: { 'hero-line1':'संघर्ष थांबवा.', 'hero-line2':'निर्माण सुरू करा.', 'hero-sub':'प्रत्येक YouTube समस्या एकाच ठिकाणी सोडवा.', 'hero-cta1':'🚀 Premium घ्या — फक्त ₹49' },
-  gu: { 'hero-line1':'સંઘર્ષ બંધ કરો.', 'hero-line2':'બનાવવાનું શરૂ કરો.', 'hero-sub':'YouTube ની દરેક સમસ્યા એક જ જગ્યાએ ઉકેલો.', 'hero-cta1':'🚀 Premium મેળવો — ₹49 જ' },
-  kn: { 'hero-line1':'ಹೋರಾಟ ನಿಲ್ಲಿಸಿ.', 'hero-line2':'ರಚಿಸಲು ಪ್ರಾರಂಭಿಸಿ.', 'hero-sub':'YouTube ಸಮಸ್ಯೆಗಳನ್ನು ಒಂದೇ ಸ್ಥಳದಲ್ಲಿ ಪರಿಹರಿಸಿ.', 'hero-cta1':'🚀 Premium ಪಡೆಯಿರಿ — ₹49 ಮಾತ್ರ' },
-  ml: { 'hero-line1':'പോരാട്ടം നിർത്തുക.', 'hero-line2':'സൃഷ്ടിക്കാൻ തുടങ്ങുക.', 'hero-sub':'YouTube പ്രശ്‌നങ്ങൾ ഒരിടത്ത് പരിഹരിക്കുക.', 'hero-cta1':'🚀 Premium നേടുക — ₹49 മാത്രം' },
-  pa: { 'hero-line1':'ਸੰਘਰਸ਼ ਬੰਦ ਕਰੋ.', 'hero-line2':'ਬਣਾਉਣਾ ਸ਼ੁਰੂ ਕਰੋ.', 'hero-sub':'ਹਰ YouTube ਸਮੱਸਿਆ ਇੱਕ ਥਾਂ ਹੱਲ ਕਰੋ.', 'hero-cta1':'🚀 Premium ਲਓ — ਸਿਰਫ਼ ₹49' },
-  ur: { 'hero-line1':'جدوجہد بند کریں.', 'hero-line2':'بنانا شروع کریں.', 'hero-sub':'ہر YouTube مسئلہ ایک جگہ حل کریں.', 'hero-cta1':'🚀 Premium لیں — صرف ₹49' },
-};
-
-function changeLang(lang) {
-  const t = translations[lang] || translations.en;
-  Object.keys(t).forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = t[id];
-  });
-}
-
-// NAV SCROLL EFFECT
-window.addEventListener('scroll', () => {
-  document.querySelector('nav').style.background = window.scrollY > 50 ? 'rgba(8,8,8,0.97)' : 'rgba(8,8,8,0.85)';
-});
-
-// ===== LOGIN SYSTEM =====
-function openLoginModal() {
-  document.getElementById('loginOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeLoginModal() {
-  document.getElementById('loginOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-document.getElementById('loginOverlay').addEventListener('click', e => {
-  if (e.target === e.currentTarget) closeLoginModal();
-});
-
-function switchTab(tab) {
-  document.getElementById('panelLogin').style.display = 'none';
-  document.getElementById('panelSignup').style.display = 'none';
-  document.getElementById('panelForgot').style.display = 'none';
-  document.getElementById('panelSuccess').style.display = 'none';
-  document.getElementById('tabLogin').classList.remove('active');
-  document.getElementById('tabSignup').classList.remove('active');
-  if (tab === 'login') {
-    document.getElementById('panelLogin').style.display = 'block';
-    document.getElementById('tabLogin').classList.add('active');
-  } else {
-    document.getElementById('panelSignup').style.display = 'block';
-    document.getElementById('tabSignup').classList.add('active');
-  }
-}
-
-function showForgot() {
-  document.getElementById('panelLogin').style.display = 'none';
-  document.getElementById('panelForgot').style.display = 'block';
-}
-
-function togglePw(id, btn) {
-  const inp = document.getElementById(id);
-  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
-  else { inp.type = 'password'; btn.textContent = '👁️'; }
-}
-
-function checkStrength(val) {
-  const fill = document.getElementById('strengthFill');
-  const text = document.getElementById('strengthText');
-  let score = 0;
-  if (val.length >= 8) score++;
-  if (/[A-Z]/.test(val)) score++;
-  if (/[0-9]/.test(val)) score++;
-  if (/[^a-zA-Z0-9]/.test(val)) score++;
-  const levels = [
-    { w:'0%', c:'transparent', t:'' },
-    { w:'25%', c:'#FF2121', t:'Weak — add uppercase letters' },
-    { w:'50%', c:'#FF8C00', t:'Fair — add numbers' },
-    { w:'75%', c:'#FFD700', t:'Good — add special characters' },
-    { w:'100%', c:'#22c55e', t:'Strong password! ✓' },
-  ];
-  const l = levels[score] || levels[0];
-  fill.style.width = l.w; fill.style.background = l.c; text.textContent = l.t;
-  text.style.color = l.c;
-}
-
-function showSuccess(title, msg) {
-  document.getElementById('panelLogin').style.display = 'none';
-  document.getElementById('panelSignup').style.display = 'none';
-  document.getElementById('panelForgot').style.display = 'none';
-  document.getElementById('panelSuccess').style.display = 'block';
-  document.getElementById('successTitle').textContent = title;
-  document.getElementById('successMsg').textContent = msg;
-}
-
-function googleLogin() {
-  // Simulate Google OAuth flow
-  const btn = event.currentTarget;
-  btn.textContent = '⏳ Connecting to Google...';
-  btn.disabled = true;
-  setTimeout(() => {
-    showSuccess('Welcome, Creator! 🎉', 'You\'ve been signed in with your Google account. Your CreatorFix dashboard is ready.');
-  }, 1800);
-}
-
-function doLogin() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const pass = document.getElementById('loginPassword').value;
-  if (!email || !pass) { shakeField(!email ? 'loginEmail' : 'loginPassword'); return; }
-  if (!email.includes('@')) { shakeField('loginEmail'); return; }
-  const btn = document.querySelector('#panelLogin .login-submit');
-  btn.textContent = '⏳ Signing you in...'; btn.disabled = true;
-  setTimeout(() => showSuccess('Welcome Back! 👋', `Signed in as ${email}. Your dashboard is ready — let's fix your YouTube!`), 1500);
-}
-
-function doSignup() {
-  const first = document.getElementById('signupFirst').value.trim();
-  const email = document.getElementById('signupEmail').value.trim();
-  const pass = document.getElementById('signupPassword').value;
-  if (!first) { shakeField('signupFirst'); return; }
-  if (!email || !email.includes('@')) { shakeField('signupEmail'); return; }
-  if (pass.length < 6) { shakeField('signupPassword'); return; }
-  const btn = document.querySelector('#panelSignup .login-submit');
-  btn.textContent = '⏳ Creating your account...'; btn.disabled = true;
-  setTimeout(() => showSuccess(`Welcome, ${first}! 🚀`, 'Your free CreatorFix account is ready. Start solving your YouTube problems now!'), 1600);
-}
-
-function doForgot() {
-  const email = document.getElementById('forgotEmail').value.trim();
-  if (!email || !email.includes('@')) { shakeField('forgotEmail'); return; }
-  const btn = document.querySelector('#panelForgot .login-submit');
-  btn.textContent = '⏳ Sending reset link...'; btn.disabled = true;
-  setTimeout(() => showSuccess('Check Your Email! 📧', `A password reset link has been sent to ${email}. Check your inbox (and spam folder).`), 1400);
-}
-
-function shakeField(id) {
-  const el = document.getElementById(id);
-  el.style.borderColor = 'var(--red)';
-  el.style.animation = 'shake 0.4s ease';
-  el.focus();
-  setTimeout(() => { el.style.animation = ''; }, 500);
-}
-
-// Inject shake keyframe dynamically
-const shakeStyle = document.createElement('style');
-shakeStyle.textContent = `@keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-6px)} 40%,80%{transform:translateX(6px)} }`;
-document.head.appendChild(shakeStyle);
-</script>
+    <script>
+        // ============= MODAL FUNCTIONS =============
+        function openModal() {
+            document.getElementById('paymentModal').classList.add('active');
+        }
+        
+        function closeModal() {
+            document.getElementById('paymentModal').classList.remove('active');
+        }
+        
+        function openLoginModal() {
+            document.getElementById('loginModal').classList.add('active');
+        }
+        
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.remove('active');
+        }
+        
+        function openUPIPayment() {
+            closeModal();
+            document.getElementById('upiModal').classList.add('active');
+        }
+        
+        function closeUPIModal() {
+            document.getElementById('upiModal').classList.remove('active');
+        }
+        
+        // ============= LOGIN FUNCTIONS =============
+        function handleLogin(event) {
+            event.preventDefault();
+            alert('✅ Login successful! Redirecting...');
+            closeLoginModal();
+        }
+        
+        function loginWithGoogle() {
+            alert('🔗 Google login integration - configure in backend');
+        }
+        
+        // ============= PAYMENT FUNCTIONS =============
+        function startFreeTrial() {
+            alert('✅ Free trial started! आप 7 days के लिए सब features access कर सकते हो।');
+            closeModal();
+        }
+        
+        function verifyPayment() {
+            alert('✅ Payment verification! Support team से contact मिलेगा 24 hours में।');
+            closeUPIModal();
+        }
+        
+        function contactSales() {
+            alert('📞 Sales team आपको contact करेगा। Email: sales@creatorsfixx.com');
+            closeModal();
+        }
+        
+        // ============= PROBLEM ANALYZER FUNCTIONS =============
+        const solutions = {
+            views: {
+                title: "📉 Views न आने की समस्या",
+                content: `
+                    <h4 style="color: var(--primary); margin: 1rem 0;">मुख्य कारण:</h4>
+                    <ul style="margin-left: 2rem;">
+                        <li>❌ Video quality ठीक नहीं है</li>
+                        <li>❌ Title और thumbnail attractive नहीं हैं</li>
+                        <li>❌ SEO optimize नहीं है</li>
+                        <li>❌ Upload frequency inconsistent है</li>
+                        <li>❌ Audience retention कम है</li>
+                    </ul>
+                    <h4 style="color: var(--primary); margin: 1rem 0; margin-top: 2rem;">समाधान:</h4>
+                    <ul style="margin-left: 2rem;">
+                        <li>✅ Click-through rate (CTR) optimize करें</li>
+                        <li>✅ Custom thumbnails बनाएं</li>
+                        <li>✅ Video length को audience retention के हिसाब से adjust कर��ं</li>
+                        <li>✅ Consistent upload schedule रखें</li>
+                        <li>✅ Tags और description में keywords use करें</li>
+                    </ul>
+                `
+            },
+            subscribers: {
+                title: "👥 Subscribers धीरे बढ़ रहे हैं",
+                content: `
+                    <h4 style="color: var(--primary); margin: 1rem 0;">मुख्य कारण:</h4>
+                    <ul style="margin-left: 2rem;">
+                        <li>❌ Content quality inconsistent है</li>
+                        <li>❌ Niche clear नहीं है</li>
+                        <li>❌ Channel का branding weak है</li>
+                        <li>❌ Engagement low है</li>
+                        <li>❌ Call-to-action missing है</li>
+                    </ul>
+                    <h4 style="color: var(--primary); margin: 1rem 0; margin-top: 2rem;">समाधान:</h4>
+                    <ul style="margin-left: 2rem;">
+                        <li>✅ एक specific niche चुनें</li>
+                        <li>✅ Professional channel branding करवाएं</li>
+                        <li>✅ हर video में subscription call-to-action add करें</li>
+                        <li>✅ Community posts regularly करें</li>
+                        <li>✅ Collaboration opportunities ढूंढें</li>
+                    </ul>
+                `
+            },
+            viral: {
+                title: "🔥 Videos Viral नहीं हो रहे",
+                content: `
+                    <h4 style="color: var(--primary); margin: 1rem 0;">मुख्य कारण:</h4>
+                    <ul style="margin-left: 2rem;">
+                        <li>❌ Content unique नहीं है</li>
+                        <li>❌ Trending topics ignore कर रहे हैं</li>
+                        <li>❌ Video hooks weak हैं</li>
+                        <li>❌ Watch time कम है</li>
+                        <li>❌ Social media promotion नहीं कर रहे</li>
+                    </ul>
+                    <h4 style="color: var(--primary); margin: 1rem 0; margin-top: 2rem;">समाधान:</h4>
+                    <ul style="margin-left: 2rem;">
+                        <li>✅ Trending sounds और trends use करें</li>
+                        <li>✅ Viral content pattern study करें</li>
+                        <li>✅ First 30 seconds को hook से शुरू करें</li>
+                        <li>✅ Shorts format में content बनाएं</li>
+                        <li>✅ Instagram, TikTok, Twitter पर share करें</li>
+                    </ul>
+                `
+            },
+            engagement: {
+                title: "💬 Engagement कम है",
+                content: `
+                    <h4 style="color: var(--primary); margin: 1rem 0;">मुख्य कारण:</h4>
+                    <ul style="margin-left: 2rem;">
+                        <li>❌ Comments पर reply नहीं दे रहे</li>
+                        <li>❌ Audience से interaction नहीं करते</li>
+                        <li>❌ Community posts irregular हैं</li>
+                        <li>❌ Video को engaging बनाने के techniques नहीं हैं</li>
+                    </ul>
+                    <h4 style="color: var(--primary); margin: 1rem 0; margin-top: 2rem;">समाधान:</h4>
+                    <ul style="margin-left: 2rem;">
+                        <li>✅ हर comment का जवाब दें (पहले 24 hours में)</li>
+                        <li>✅ Questions videos में पूछें</li>
+                        <li>✅ Polls और surveys करें</li>
+                        <li>✅ Weekly community post करें</li>
+                        <li>✅ Viewer suggestions को implement करें</li>
+                    </ul>
+                `
+            },
+            monetization: {
+                title: "💰 Monetization में मदद चाहिए",
+                content: `
+                    <h4 style="color: var(--primary); margin: 1rem 0;">Monetization के तरीके:</h4>
+                    <ul style="margin-left: 2rem;">
+                        <li>💰 AdSense - YouTube से direct earning</li>
+                        <li>🤝 Sponsorships - Brand collaborations</li>
+                        <li>🎁 Super Chat/Super Thanks</li>
+                        <li>📦 Channel Membership</li>
+                        <li>🛍️ YouTube Shopping</li>
+                        <li>📚 Affiliate Marketing</li>
+                    </ul>
+                    <h4 style="color: var(--primary); margin: 1rem 0; margin-top: 2rem;">Eligibility:</h4>
+                    <ul style="margin-left: 2rem;">
+                        <li>✅ 1000 subscribers + 4000 watch hours</li>
+                        <li>✅ 18+ age (या guardian approval)</li>
+                        <li>✅ YouTube Partner Program में approved</li>
+                    </ul>
+                `
+            },
+            content: {
+                title: "🎬 Content Strategy की जरूरत है",
+                content: `
+                    <h4 style="color: var(--primary); margin: 1rem 0;">सही Content Strategy:</h4>
+                    <ul style="margin-left: 2rem;">
+                        <li>📋 Content calendar बनाएं</li>
+                        <li>🎯 Target audience को समझें</li>
+                        <li>📊 Analytics से सीखें कौन से videos काम कर रहे हैं</li>
+                        <li>🔄 Content mix रखें (Educational + Entertainment + Personal)</li>
+                        <li>📱 Short form (Shorts) + Long form दोनों करें</li>
+                    </ul>
+                    <h4 style="color: var(--primary); margin: 1rem 0; margin-top: 2rem;">Content pillars (3-5 choose करें):</h4>
+                    <ul style="margin-left: 2rem;">
+                        <li>📚 Tutorial/Educational</li>
+                        <li>🎬 Entertainment</li>
+                        <li>💭 Personal/Vlog</li>
+                        <li>❓ Q&A/Community</li>
+                        <li>🔴 Live streams</li>
+                    </ul>
+                `
+            }
+        };
+        
+        function selectTag(tag) {
+            // Remove active class from all buttons
+            document.querySelectorAll('.tag-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // Show result
+            const solution = solutions[tag];
+            document.getElementById('resultTitle').textContent = solution.title;
+            document.getElementById('resultContent').innerHTML = solution.content;
+            document.querySelector('.analyzer-result').classList.add('show');
+            
+            // Smooth scroll to result
+            setTimeout(() => {
+                document.querySelector('.analyzer-result').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+        
+        // ============= CHAT FUNCTIONS =============
+        let chatOpen = false;
+        
+        function toggleChat() {
+            chatOpen = !chatOpen;
+            const chatBox = document.querySelector('.chat-box');
+            if (chatOpen) {
+                chatBox.classList.add('open');
+            } else {
+                chatBox.classList.remove('open');
+            }
+        }
+        
+        function sendChat() {
+            const chatInput = document.getElementById('chatInput');
+            const message = chatInput.value.trim();
+            
+            if (message === '') return;
+            
+            // Add user message
+            const chatMessages = document.getElementById('chatMessages');
+            const userMessageDiv = document.createElement('div');
+            userMessageDiv.className = 'message user';
+            userMessageDiv.innerHTML = `<strong>You:</strong> ${message}`;
+            chatMessages.appendChild(userMessageDiv);
+            
+            // Clear input
+            chatInput.value = '';
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Simulate bot response
+            setTimeout(() => {
+                const botMessageDiv = document.createElement('div');
+                botMessageDiv.className = 'message bot';
+                const responses = [
+                    'यह एक बहुत अच्छा सवाल है! 🤔 अपनी problem को detail से बताइए तो मैं better help दे सकूँ।',
+                    'आपका सवाल समझ गया। 💡 मैं आपको ठीक जवाब दे सकता हूँ अगर थोड़ी और details दें।',
+                    'बिल्कुल सही सवाल! 👍 हमारी Premium plan में यह feature है। अभी upgrade करें!',
+                    'आप सही path पर हो! ✨ Consistency और quality को ध्यान दें।'
+                ];
+                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                botMessageDiv.innerHTML = `<strong>AI Support:</strong> ${randomResponse}`;
+                chatMessages.appendChild(botMessageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 500);
+        }
+        
+        // ============= LANGUAGE FUNCTION =============
+        const translations = {
+            hi: {
+                heroTitle: 'CreatorsFix - आपकी YouTube Growth का Partner',
+                heroSubtitle: 'AI-powered analytics और strategies के साथ अपने channel को grow करें'
+            },
+            en: {
+                heroTitle: 'CreatorsFix - Your YouTube Growth Partner',
+                heroSubtitle: 'Grow your channel with AI-powered analytics and strategies'
+            }
+        };
+        
+        function changeLang(lang) {
+            const translation = translations[lang] || translations['hi'];
+            document.getElementById('heroTitle').textContent = translation.heroTitle;
+            document.getElementById('heroSubtitle').textContent = translation.heroSubtitle;
+            localStorage.setItem('language', lang);
+        }
+        
+        // Load saved language
+        window.addEventListener('load', () => {
+            const savedLang = localStorage.getItem('language') || 'hi';
+            document.getElementById('langSelect').value = savedLang;
+            changeLang(savedLang);
+            
+            // Animate stats on load
+            animateStats();
+        });
+        
+        // ============= STATS ANIMATION =============
+        function animateStats() {
+            const statNumbers = document.querySelectorAll('.stat-number');
+            
+            statNumbers.forEach(stat => {
+                const target = parseInt(stat.getAttribute('data-target'));
+                let current = 0;
+                const increment = target / 50;
+                
+                const interval = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        stat.textContent = target.toLocaleString('en-IN');
+                        clearInterval(interval);
+                    } else {
+                        stat.textContent = Math.floor(current).toLocaleString('en-IN');
+                    }
+                }, 30);
+            });
+        }
+        
+        // Close modals on outside click
+        window.addEventListener('click', (event) => {
+            const loginModal = document.getElementById('loginModal');
+            const paymentModal = document.getElementById('paymentModal');
+            const upiModal = document.getElementById('upiModal');
+            
+            if (event.target === loginModal) {
+                closeLoginModal();
+            }
+            if (event.target === paymentModal) {
+                closeModal();
+            }
+            if (event.target === upiModal) {
+                closeUPIModal();
+            }
+        });
+        
+        // Add keyboard support
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                closeModal();
+                closeLoginModal();
+                closeUPIModal();
+            }
+        });
+        
+        // Chat input on Enter key
+        document.getElementById('chatInput')?.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                sendChat();
+            }
+        });
+    </script>
 </body>
 </html>
